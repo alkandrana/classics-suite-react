@@ -20,16 +20,18 @@ export default function Authors() {
     return (
         <div className="">
             <Link to="/authors/add" className="px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-400 transition">Create New</Link>
-            <div className="grid grid-cols-3 gap-4 font-bold border-b">
+            <div className="grid grid-cols-4 gap-4 font-bold border-b">
                 <p>Author Abbrv.</p>
                 <p>Common Name</p>
                 <p>Native Name</p>
+                <p>Actions</p>
             </div>
             {authors.map((author) => (
-                <div key={author.id} className="grid grid-cols-3 gap-4">
+                <div key={author.id} className="grid grid-cols-4 gap-4">
                     <p>{author.code}</p>
                     <p>{author.name}</p>
                     <p>{`${author.praenomen} ${author.nomen} ${author.cognomen}`}</p>
+                    <Link to={`/authors/${author.id}/edit`}>Edit</Link>
                 </div>
             ))}
         </div>
