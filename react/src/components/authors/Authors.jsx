@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 
 export default function Authors() {
@@ -19,19 +19,25 @@ export default function Authors() {
     console.log(authors);
     return (
         <div className="">
-            <Link to="/authors/add" className="px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-400 transition">Create New</Link>
-            <div className="grid grid-cols-4 gap-4 font-bold border-b">
+            <div className="flex p-2">
+                <Link to="/authors/add"
+                      className="ml-auto px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-400 transition">
+                    Create New
+                </Link>
+            </div>
+            <div className="grid grid-cols-4 gap-4 font-bold border-b text-blue-600">
                 <p>Author Abbrv.</p>
                 <p>Common Name</p>
                 <p>Native Name</p>
                 <p>Actions</p>
             </div>
             {authors.map((author) => (
-                <div key={author.id} className="grid grid-cols-4 gap-4">
+                <div key={author.id}
+                     className="grid grid-cols-4 gap-4 text-amber-400 bg-gray-800 border-black border-2">
                     <p>{author.code}</p>
                     <p>{author.name}</p>
-                    <p>{`${author.praenomen} ${author.nomen} ${author.cognomen}`}</p>
-                    <Link to={`/authors/${author.id}/edit`}>Edit</Link>
+                    <p>{`${author.praenomen || ""} ${author.nomen || ""} ${author.cognomen || ""}`}</p>
+                    <Link to={`/authors/${author.id}/edit`} className="text-blue-600 underline">Edit</Link>
                 </div>
             ))}
         </div>
