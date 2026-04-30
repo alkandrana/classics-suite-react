@@ -1,14 +1,45 @@
-import {useNavigate, Link} from "react-router-dom";
-import {useEffect} from "react";
+import {useNavigate, Link, useParams, useLocation} from "react-router-dom";
+import {useEffect, useState} from "react";
+import TextInput from "./TextInput";
 
-export default function Form(recordType, instance = null) {
+export default function Form() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const params = useParams();
+    const [instance, setInstance] = useState();
+    const [metadata, setMetadata] = useState(null);
+    let controller = location.pathname.split("/").filter(p => p)[0];
+    let recordType = controller.slice(0, -1);
 
     useEffect(() => {
         const fetchMetadata = async () => {
-            let url =
+            let url = `http://localhost:3000/${controller}/metadata`;
+            const response = await fetch(url);
+            const content = await response.json();
+            if (response.ok) {
+                setMetadata(content);
+            } else {
+                console.log("Error fetching metadata", response.status, content);
+            }
         }
-    })
+
+        const fetchRecord = async () => {
+            let url = `http://localhost:3000/${controller}/${params[recordType + "Id"]}`;
+            console.log(url);
+            const response = await fetch(url);
+            const content = await response.json();
+            if (response.ok) {
+                setInstance(content);
+                console.log(content);
+            } else {
+                console.log("Error fetching record", response.status, content);
+            }
+        }
+        if (params[recordType + "Id"]) {
+            fetchRecord();
+        }
+        fetchMetadata();
+    }, []);
     const handleSubmit = async (e) => {
         e.preventDefault();
         const target = e.target;
@@ -17,12 +48,13 @@ export default function Form(recordType, instance = null) {
         console.log("Constructed object to create: ", record);
         let url, method;
         if (instance) {
-            url = `http://localhost:3000/${recordType}/${instance.id}`;
+            url = `http://localhost:3000/${controller}/${instance.id}`;
             method = "PATCH";
         } else {
-            url = `http://localhost:3000/${recordType}`;
+            url = `http://localhost:3000/${controller}`;
             method = "POST";
         }
+        console.log(url, method);
         const response = await fetch(url, {
             method: method,
             headers: {"Content-Type": "application/json"},
@@ -31,54 +63,34 @@ export default function Form(recordType, instance = null) {
         const content = await response.json();
         if (response.ok) {
             console.log(content);
-            navigate(`/${recordType}`);
+            navigate(`/${recordType}s`);
         } else {
             console.log("Error updating record: ", response.status, content);
+        }
+    }
+    let fields = [];
+    if (metadata) {
+        console.log("Metadata: ", metadata);
+        console.log("Metadata and: ", instance);
+        for (const field of metadata.filter(f => !f.isPrimaryKey)) {
+            if (field.datatype === "string") {
+                fields.push(<TextInput key={field.name} metadata={field}
+                                       value={instance ? instance[field.name] : ""}/>);
+            }
         }
     }
 
     return (
         <form onSubmit={handleSubmit} className="text-yellow-600">
-            <div className="mb-4 grid grid-cols-2 gap-4">
-                <label htmlFor="code" className="text-right text-sm font-semibold mb-2">
-                    Author Abbrv.
-                </label>
-                <input type="text" id="code" name="code" defaultValue={author.code}
-                       className="w-1/2 px-3 py-2 border rounded"/>
-            </div>
-            <div className="mb-4 grid grid-cols-2 gap-4">
-                <label htmlFor="name" className="text-right text-sm font-semibold mb-2">
-                    Common Name
-                </label>
-                <input type="text" id="name" name="name" defaultValue={author.name}
-                       className="w-1/2 px-3 py-2 border rounded"/>
-            </div>
-            <div className="mb-4 grid grid-cols-2 gap-4">
-                <label htmlFor="praenomen" className="text-right text-sm font-semibold mb-2">
-                    Praenomen
-                </label>
-                <input type="text" id="praenomen" name="praenomen" defaultValue={author.praenomen}
-                       className="w-1/2 px-3 py-2 border rounded"/>
-            </div>
-            <div className="mb-4 grid grid-cols-2 gap-4">
-                <label htmlFor="nomen" className="text-right text-sm font-semibold mb-2">
-                    Native Name
-                </label>
-                <input type="text" id="nomen" name="nomen" defaultValue={author.nomen}
-                       className="w-1/2 px-3 py-2 border rounded"/>
-            </div>
-            <div className="mb-4 grid grid-cols-2 gap-4">
-                <label htmlFor="cognomen" className="text-right text-sm font-semibold mb-2">
-                    Cognomen
-                </label>
-                <input type="text" id="cognomen" name="cognomen" defaultValue={author.cognomen}
-                       className="w-1/2 px-3 py-2 border rounded"/>
-            </div>
+            {fields.map(f => f)}
             <button type="submit"
-                    className="px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-400 transition">Create
+                    className="px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-400 transition">
+                Submit
             </button>
             <Link to="/authors"
-                  className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-400 transition">Cancel</Link>
+                  className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-400 transition">
+                Cancel
+            </Link>
         </form>
     )
 }
