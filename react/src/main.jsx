@@ -6,6 +6,7 @@ import App from './components/App.jsx'
 import HomePage from "./components/HomePage.jsx";
 import Authors from "./components/authors/Authors.jsx";
 import Form from "./components/ui/Form.jsx";
+import Table from "./components/ui/Table.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -17,10 +18,10 @@ createRoot(document.getElementById('root')).render(
 
                     </Route>
                     <Route path="authors">
-                        <Route index element={<Authors/>}/>
-                        <Route path="add" element={<Form recordType={"author"}/>}/>
+                        <Route index element={<Table/>}/>
+                        <Route path="add" element={<Form/>}/>
                         <Route path=":authorId">
-                            <Route path="edit" element={<Form recordType={"author"}/>}/>
+                            <Route path="edit" element={<Form/>}/>
                         </Route>
                     </Route>
                 </Route>
