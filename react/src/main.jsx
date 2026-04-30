@@ -5,7 +5,6 @@ import './index.css'
 import App from './components/App.jsx'
 import HomePage from "./components/HomePage.jsx";
 import Authors from "./components/authors/Authors.jsx";
-import AuthorForm from "./components/authors/AuthorForm.jsx";
 import Form from "./components/ui/Form.jsx";
 
 createRoot(document.getElementById('root')).render(
