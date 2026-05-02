@@ -1,45 +1,33 @@
-import {useState, useEffect} from "react";
-import {Link} from "react-router-dom";
+import {useState, useEffect} from "react"
+import Table from "../ui/Table.jsx";
+import {fetchAll} from "../../apiLib.js";
 
 export default function Authors() {
     const [authors, setAuthors] = useState([]);
-
     useEffect(() => {
-        const fetchAuthors = async () => {
-            const response = await fetch("http://localhost:3000/authors");
-            const content = await response.json();
-            if (!response.ok) {
-                console.log("Error fetching authors", response.status, content);
-            } else {
-                setAuthors(content);
+        const getAuthors = async () => {
+            const authors = await fetchAll("authors");
+            const displayAuthors = [];
+            for (let a of authors) {
+                displayAuthors.push({
+                    id: a.id,
+                    code: a.code,
+                    name: a.name,
+                    fullName: `${a.praenomen || ""} ${a.nomen || ""} ${a.cognomen || ""}`
+                });
             }
+            setAuthors(displayAuthors);
         }
-        fetchAuthors();
+        getAuthors();
     }, []);
-    console.log(authors);
-    return (
-        <div className="">
-            <div className="flex p-2">
-                <Link to="/authors/add"
-                      className="ml-auto px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-400 transition">
-                    Create New
-                </Link>
-            </div>
-            <div className="grid grid-cols-4 gap-4 font-bold border-b text-blue-600">
-                <p>Author Abbrv.</p>
-                <p>Common Name</p>
-                <p>Native Name</p>
-                <p>Actions</p>
-            </div>
-            {authors.map((author) => (
-                <div key={author.id}
-                     className="grid grid-cols-4 gap-4 text-amber-400 bg-gray-800 border-black border-2">
-                    <p>{author.code}</p>
-                    <p>{author.name}</p>
-                    <p>{`${author.praenomen || ""} ${author.nomen || ""} ${author.cognomen || ""}`}</p>
-                    <Link to={`/authors/${author.id}/edit`} className="text-blue-600 underline">Edit</Link>
-                </div>
-            ))}
-        </div>
+
+    const cols = {
+        code: "Abbreviation",
+        name: "Common Name",
+        fullName: "Native Name",
+    }
+
+    return authors.length > 0 && (
+        <Table records={authors} labels={cols}/>
     )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {useState} from 'react'
 import reactLogo from '../assets/react.svg'
 import viteLogo from '../assets/vite.svg'
 import heroImg from '../assets/hero.png'
@@ -12,15 +12,17 @@ export default function HomePage() {
         <>
             <section id="center">
                 <div className="hero">
-                    <img src={heroImg} className="base" width="170" height="179" alt="" />
-                    <img src={reactLogo} className="framework" alt="React logo" />
-                    <img src={viteLogo} className="vite" alt="Vite logo" />
+                    <img src={heroImg} className="base" width="170" height="179" alt=""/>
+                    <img src={reactLogo} className="framework" alt="React logo"/>
+                    <img src={viteLogo} className="vite" alt="Vite logo"/>
                 </div>
                 <div>
                     <h1>Get started</h1>
                     <p className="grid grid-cols-2 gap-4">
-                        <Link to="/authors" className="px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-gray-600 transition">Authors</Link>
-                        <Link to="/opera" className="px-4 py-2 bg-yellow-700 text-white rounded-lg hover:bg-gray-600 transition">Works</Link>
+                        <Link to="/authors"
+                              className="px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-gray-600 transition">Authors</Link>
+                        <Link to="/works"
+                              className="px-4 py-2 bg-yellow-700 text-white rounded-lg hover:bg-gray-600 transition">Works</Link>
                     </p>
                 </div>
                 <button
@@ -44,13 +46,13 @@ export default function HomePage() {
                     <ul>
                         <li>
                             <a href="https://vite.dev/" target="_blank">
-                                <img className="logo" src={viteLogo} alt="" />
+                                <img className="logo" src={viteLogo} alt=""/>
                                 Explore Vite
                             </a>
                         </li>
                         <li>
                             <a href="https://react.dev/" target="_blank">
-                                <img className="button-icon" src={reactLogo} alt="" />
+                                <img className="button-icon" src={reactLogo} alt=""/>
                                 Learn more
                             </a>
                         </li>

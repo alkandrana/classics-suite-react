@@ -1,15 +1,12 @@
-import {useNavigate, Link, useParams, useLocation} from "react-router-dom";
+import {useNavigate, Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import TextInput from "./TextInput";
+import SelectList from "./SelectList.jsx";
 
-export default function Form() {
+export default function Form({instance, values, controller}) {
     const navigate = useNavigate();
-    const location = useLocation();
     const params = useParams();
-    const [instance, setInstance] = useState();
     const [metadata, setMetadata] = useState(null);
-    let controller = location.pathname.split("/").filter(p => p)[0];
-    let recordType = controller.slice(0, -1);
 
     useEffect(() => {
         const fetchMetadata = async () => {
@@ -23,23 +20,9 @@ export default function Form() {
             }
         }
 
-        const fetchRecord = async () => {
-            let url = `http://localhost:3000/${controller}/${params[recordType + "Id"]}`;
-            console.log(url);
-            const response = await fetch(url);
-            const content = await response.json();
-            if (response.ok) {
-                setInstance(content);
-                console.log(content);
-            } else {
-                console.log("Error fetching record", response.status, content);
-            }
-        }
-        if (params[recordType + "Id"]) {
-            fetchRecord();
-        }
         fetchMetadata();
     }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const target = e.target;
@@ -63,7 +46,7 @@ export default function Form() {
         const content = await response.json();
         if (response.ok) {
             console.log(content);
-            navigate(`/${recordType}s`);
+            navigate(`/${controller}`);
         } else {
             console.log("Error updating record: ", response.status, content);
         }
@@ -71,14 +54,27 @@ export default function Form() {
     let fields = [];
     if (metadata) {
         console.log("Metadata: ", metadata);
-        console.log("Metadata and: ", instance);
-        for (const field of metadata.filter(f => !f.isPrimaryKey)) {
+        // console.log("Metadata and: ", instance);
+        for (const field of metadata.columns.filter(f => !f.isPrimaryKey)) {
+            console.log("In metadata for: ", field.name);
+            let value = instance ? instance[field.name] : "";
             if (field.datatype === "string") {
                 fields.push(<TextInput key={field.name} metadata={field}
-                                       value={instance ? instance[field.name] : ""}/>);
+                                       value={value}/>);
+            } else if (field.datatype === "enum") {
+                console.log("Enum field: ", field);
+                fields.push(<SelectList key={field.name} field={field} value={value}/>);
+            } else if (field.datatype === "int") {
+                console.log("Metadata field: ", field);
+                if (field.isForeignKey) {
+                    field.valueList = values;
+                    fields.push(<SelectList key={field.name} field={field} value={value}/>);
+                }
             }
+
         }
     }
+    console.log("Fields to populate: ", fields);
 
     return (
         <form onSubmit={handleSubmit} className="text-yellow-600">
