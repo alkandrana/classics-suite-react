@@ -19,7 +19,7 @@ export async function fetchOne(controller, id) {
 }
 
 export async function submitForm(e, controller) {
-    e.preventDefault();
+    // e.preventDefault();
     let target = e.target;
     let formData = new FormData(target);
     const record = Object.fromEntries(formData.entries());
@@ -28,8 +28,10 @@ export async function submitForm(e, controller) {
     if (record.id) {
         method = "PATCH";
         url += `/${record.id}`;
+    } else {
+        delete record.id;
     }
-    console.log(`Submitting ${method} request to ${url}`);
+    console.log(`Submitting ${method} request to ${url}: `, record);
     const response = await fetch(url, {
         method: method,
         headers: {"Content-Type": "application/json"},

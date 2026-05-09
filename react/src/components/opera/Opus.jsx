@@ -16,6 +16,16 @@ export default function Opus() {
 
     async function handleSubmit(e) {
         submitForm(e, "lines");
+        document.getElementById("addBtn").classList.remove("hidden");
+        e.target.classList.add("hidden");
+    }
+
+    function handleNewLine(e) {
+        const $form = document.getElementById("form");
+        const $btn = e.target;
+        console.log($btn);
+        $form.classList.remove("hidden");
+        $btn.classList.add("hidden");
     }
 
     function handleEdit(id) {
@@ -24,21 +34,22 @@ export default function Opus() {
         document.getElementById("text").defaultValue = line.text;
         document.getElementById("locus").defaultValue = line.locus;
         document.getElementById("id").defaultValue = line.id;
-        // console.log($form.querySelectorAll("input"));
     }
 
     async function handleDelete() {
         console.log("Delete");
     }
 
+    document.getElementById("addBtn").scrollIntoView();
     return (
         <>
-            <div className="bg-gray-800 text-white p-3 rounded">
-                <h3 className="text-lg font-semibold">{opus.title}</h3>
+            <h1>{`${opus.title} by ${opus.author.name}`}</h1>
+            <div className="text-left bg-gray-800 text-amber-400 p-3 rounded w-60">
+                <h3 className="text-lg font-semibold my-5">{opus.title}</h3>
                 <ul>
-                    <li><strong>Abbreviation: </strong>{opus.code}</li>
-                    <li><strong>Language: </strong>{opus.language.name}</li>
-                    <li><strong>Author: </strong>{opus.author.name}</li>
+                    <li className="my-5"><strong>Abbreviation: </strong>{opus.code}</li>
+                    <li className="my-5"><strong>Language: </strong>{opus.language.name}</li>
+                    <li className="my-5"><strong>Author: </strong>{opus.author.name}</li>
                 </ul>
             </div>
             <div>
@@ -51,7 +62,7 @@ export default function Opus() {
                 <div id="rows">
                     {opus.lines.map(ln => {
                         return (
-                            <div key={ln.id} className="flex flex-row gap-4 my-3">
+                            <div key={ln.id} className="flex flex-row gap-4 my-3 text-cyan-300">
                                 <div className="w-10">{ln.number}</div>
                                 <div className="w-1/2">{ln.text}</div>
                                 <div className="w-1/4">{ln.locus}</div>
@@ -66,16 +77,18 @@ export default function Opus() {
                             </div>
                         )
                     })}
-                    <form id="form" onSubmit={handleSubmit} className="flex flex-row gap-4">
+                    <form id="form" onSubmit={handleSubmit} className="flex flex-row gap-4 hidden">
                         <input type="number" id="number" name="number" className="w-10"/>
                         <input type="text" id="text" name="text" className="w-1/2"/>
                         <input type="text" id="locus" name="locus" className="w-1/4"/>
                         <input type="hidden" id="opusId" name="opusId" value={opus.id}/>
                         <input type="hidden" id="id" name="id"/>
                         <button type="submit"
-                                className="w-1/4 bg-gray-500 text-white rounded-lg p-1 hover:bg-gray-800 transition">Submit
+                                className="btn btn-secondary">Submit
                         </button>
                     </form>
+                    <button type="button" id="addBtn" onClick={handleNewLine} className="btn bg-blue-600">Add Line
+                    </button>
                 </div>
             </div>
         </>
