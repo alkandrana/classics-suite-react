@@ -1,24 +1,14 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {submitForm} from "../../utils/api.js";
 
 export default function AuthorAdd() {
 
+    const navigate = useNavigate();
+
     async function handleSubmit(e) {
         e.preventDefault();
-        let target = e.target;
-        let formData = new FormData(target);
-        let newAuthor = formData.entries();
-        let url = 'http://localhost:3000/authors';
-        let response = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newAuthor),
-        });
-        const content = await response.json();
-        if (response.ok) {
-            console.log("Author added successfully: ", content);
-        } else {
-            console.log("There was an error creating the author: ", response.status, content);
-        }
+        await submitForm(e, "authors");
+        navigate(-1);
     }
 
     return (

@@ -24,6 +24,12 @@ export default function Opera() {
 
     return opera.length > 0 ? (
         <>
+            <div>
+                <form onSubmit={searchFilter}>
+
+                </form>
+            </div>
+            <h1>Works</h1>
             <Link to={`/works/add`}
                   className="bg-purple-700 text-white rounded-lg p-3 mb-10 hover:bg-pink-600 transition flex ml-auto w-25">
                 Add New
@@ -33,18 +39,19 @@ export default function Opera() {
                 <div className="w-1/5">Title</div>
                 <div className="w-1/5">Language</div>
                 <div className="w-1/5">Author</div>
+                <div className="w-1/5">Lines</div>
                 <div className="w-1/5">Actions</div>
             </div>
             {opera.map((opus) => {
-                console.log(opus);
                 return (
                     <div key={opus.id}
                          className="flex flex-row py-3 bg-gray-700">
-                        <div className="w-1/4">{opus.code}</div>
-                        <div className="w-1/4">{opus.title}</div>
-                        <div className="w-1/4">{opus.language?.name || ""}</div>
-                        <div className="w-1/4">{opus.author.name}</div>
-                        <div className="w-1/4">
+                        <div className="w-1/6">{opus.code}</div>
+                        <div className="w-1/6">{opus.title}</div>
+                        <div className="w-1/6">{opus.language?.name || ""}</div>
+                        <div className="w-1/6">{opus.author.name}</div>
+                        <div className="w-1/6">{opus.lineCount}</div>
+                        <div className="w-1/6">
                             <Link to={`/works/${opus.id}/edit`} className="text-blue-600 underline m-1">
                                 Edit
                             </Link>

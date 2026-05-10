@@ -60,8 +60,8 @@ export default function OpusAdd() {
                     ))}
                 </select>
             </div>
-            <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
-                <label htmlFor="authorId">Author</label>
+            <div className="flex flex-row gap-4 my-3">
+                <label htmlFor="authorId" className="w-60">Author</label>
                 <select id="authorId" name="authorId" defaultValue={opus?.authorId || ""}
                         className="border border-red-700 rounded">
                     <option value="">select an Author</option>
@@ -69,6 +69,7 @@ export default function OpusAdd() {
                         return <option key={author.id} value={author.id}>{author.name}</option>
                     })}
                 </select>
+                <a href="/authors/add" className="text-blue-600 underline text-xs">Add new author</a>
             </div>
             <button type="submit"
                     className="bg-green-800 text-white rounded-lg p-3 mr-2 hover:bg-green-500 transition">Submit

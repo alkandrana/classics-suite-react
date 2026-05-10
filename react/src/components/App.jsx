@@ -1,21 +1,6 @@
-import {Link, Outlet} from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
 
 function App() {
-    function displayMenu() {
-        const $links = document.getElementById('links');
-        const $menu = document.querySelector('nav');
-        const $btn = document.getElementById('menuBtn');
-        if ($links.classList.contains('hidden')) {
-            $links.classList.remove('hidden');
-            $menu.classList.add('bg-red-950');
-        } else {
-            $links.classList.add('hidden');
-            $menu.classList.remove('bg-red-950');
-        }
-
-
-    }
-
     return (
         <div id="main">
             <div className="drawer">

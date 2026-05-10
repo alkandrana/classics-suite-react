@@ -18,6 +18,18 @@ export async function fetchOne(controller, id) {
     }
 }
 
+export async function deleteOne(controller, id) {
+    const response = await fetch(`http://localhost:3000/${controller}/${id}`, {
+        method: 'DELETE'
+    });
+    const content = await response.json();
+    if (response.ok) {
+        return content;
+    } else {
+        console.log("Error deleting data: ", response.status, content);
+    }
+}
+
 export async function submitForm(e, controller) {
     // e.preventDefault();
     let target = e.target;
