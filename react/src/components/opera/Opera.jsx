@@ -1,32 +1,55 @@
-import {useEffect, useState} from "react";
-import {fetchAll, fetchOne} from "../../utils/api.js";
-import {Link} from "react-router-dom";
+import {useState} from "react";
+import {Link, useOutletContext} from "react-router-dom";
 
 export default function Opera() {
-    const [opera, setOpera] = useState([]);
 
-    useEffect(() => {
-        const getWorks = async () => {
-            const opera = await fetchAll("works");
-            console.log(opera);
-            for (const o of opera) {
-                if (o.languageId) {
-                    o.language = await fetchOne("languages", o.languageId);
-                }
-                o.author = await fetchOne("authors", o.authorId);
-            }
-            setOpera(opera);
-            console.log("Fetching in Opera: ", opera);
+    const repo = useOutletContext();
+    const [opera, setOpera] = useState(repo.opera);
+    console.log("Rerendering works: ", opera);
+
+    function searchFilter(e) {
+        e.preventDefault();
+        let target = e.target;
+        const formData = new FormData(target);
+        const searchObj = Object.fromEntries(formData.entries());
+        if (searchObj.language) {
+            setOpera((opera) => opera.filter(op => op.languageId == searchObj.language));
         }
+        if (searchObj.author) {
+            setOpera((opera) => opera.filter(op => op.authorId == searchObj.author));
+        }
+    }
 
-        getWorks();
-    }, []);
+    function resetFilter() {
+        setOpera(() => repo.opera);
+        document.getElementById("author").value = "";
+        document.getElementById("language").value = "";
+    }
 
     return opera.length > 0 ? (
         <>
             <div>
-                <form onSubmit={searchFilter}>
-
+                <form id="filter" onSubmit={searchFilter} className="flex gap-4">
+                    <div className="form-group">
+                        <label htmlFor="author" className="font-bold">Author</label>
+                        <select name="author" id="author" className="border border-gray-700">
+                            <option value="">Select an author</option>
+                            {repo.authors.map(author =>
+                                <option key={author.id} value={author.id}>{author.name}</option>
+                            )}
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="language" className="font-bold">Languages</label>
+                        <select name="language" id="language" className="border border-gray-700">
+                            <option value="">Select a language</option>
+                            {repo.languages.map(lang =>
+                                <option key={lang.id} value={lang.id}>{lang.name}</option>
+                            )}
+                        </select>
+                    </div>
+                    <button type="submit" className="btn btn-sm bg-gray-700">Search</button>
+                    <button type="button" className="btn bg-gray-700 btn-sm mr-4" onClick={resetFilter}>Clear</button>
                 </form>
             </div>
             <h1>Works</h1>
