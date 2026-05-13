@@ -5,7 +5,11 @@ export default function Opera() {
 
     const repo = useOutletContext();
     const [opera, setOpera] = useState(repo.opera);
+    const [title, setTitle] = useState("");
+    console.log("Search key: ", title);
     console.log("Rerendering works: ", opera);
+    console.log("New search: ", opera.filter(op => op.title.startsWith(title)));
+
 
     function searchFilter(e) {
         e.preventDefault();
@@ -20,15 +24,30 @@ export default function Opera() {
         }
     }
 
+    function searchByTitle(e) {
+        let keyword = e.target.value;
+        if (keyword === "") {
+            setOpera(repo.opera);
+        } else {
+            let results = opera.filter(op => op.title.toLowerCase().startsWith(keyword.toLowerCase())); // careful not to use state variable before rerender!
+            setOpera(results);
+        }
+        setTitle(keyword);
+    }
+
     function resetFilter() {
         setOpera(() => repo.opera);
         document.getElementById("author").value = "";
         document.getElementById("language").value = "";
     }
 
+    function submitKeyword() {
+
+    }
+
     return opera.length > 0 ? (
         <>
-            <div>
+            <div className="flex gap-4">
                 <form id="filter" onSubmit={searchFilter} className="flex gap-4">
                     <div className="form-group">
                         <label htmlFor="author" className="font-bold">Author</label>
@@ -50,6 +69,11 @@ export default function Opera() {
                     </div>
                     <button type="submit" className="btn btn-sm bg-gray-700">Search</button>
                     <button type="button" className="btn bg-gray-700 btn-sm mr-4" onClick={resetFilter}>Clear</button>
+                </form>
+                <form id="live-search" onSubmit={submitKeyword}>
+                    <label htmlFor="title">Search by title: </label>
+                    <input type="text" id="title" name="title" onChange={searchByTitle} value={title} autoFocus/>
+                    {/*<button type="submit" className="btn bg-gray-700 btn-sm mr-4">Search</button>*/}
                 </form>
             </div>
             <h1>Works</h1>
@@ -88,6 +112,11 @@ export default function Opera() {
         </>
     ) : (
         <>
+            <form id="live-search" onSubmit={submitKeyword}>
+                <label htmlFor="title">Search by title: </label>
+                <input type="text" id="title" name="title" onChange={searchByTitle} value={title} autoFocus/>
+                {/*<button type="submit" className="btn bg-gray-700 btn-sm mr-4">Search</button>*/}
+            </form>
             <div className="text-xl text-red-600 font-bold mb-10">No Records Found</div>
             <Link to="/works/add"
                   className="bg-purple-700 text-white rounded-lg p-3 mb-10 hover:bg-pink-600 transition">
