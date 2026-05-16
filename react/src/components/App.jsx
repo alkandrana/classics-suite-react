@@ -1,4 +1,6 @@
 import {Outlet} from 'react-router-dom';
+import {IoBookSharp} from 'react-icons/io5';
+import {MdPersonPin} from 'react-icons/md';
 
 function App() {
     return (
@@ -43,8 +45,8 @@ function App() {
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
                     <ul className="menu bg-base-200 min-h-full w-80 p-4">
                         {/* Sidebar content here */}
-                        <li><a href="/authors">Authors</a></li>
-                        <li><a href="/works">Works</a></li>
+                        <li><a href="/authors"><MdPersonPin/>&nbsp;Authors</a></li>
+                        <li><a href="/works"><IoBookSharp/>&nbsp;Works</a></li>
                     </ul>
                 </div>
             </div>
