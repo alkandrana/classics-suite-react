@@ -102,7 +102,9 @@ export default function Opus() {
                                                         Edit
                                                     </span>
                                         <span onClick={handleDelete}
-                                              className="text-red-600 underline hover:cursor-pointer">Delete</span>
+                                              className="text-red-600 underline mr-2 hover:cursor-pointer">Delete</span>
+                                        <a href="/vocab/add"
+                                           className="text-green-600 underline mr-2 hover:cursor-pointer">Add Vocab</a>
                                     </div>
                                 </div>
 

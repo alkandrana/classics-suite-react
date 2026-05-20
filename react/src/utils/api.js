@@ -1,5 +1,7 @@
+const BASE_URL = "http://localhost:3001";
+
 export async function fetchAll(controller) {
-    const response = await fetch(`http://localhost:3000/${controller}`);
+    const response = await fetch(`${BASE_URL}/${controller}`);
     const content = await response.json();
     if (response.ok) {
         return content;
@@ -9,7 +11,7 @@ export async function fetchAll(controller) {
 }
 
 export async function fetchOne(controller, id) {
-    const response = await fetch(`http://localhost:3000/${controller}/${id}`);
+    const response = await fetch(`${BASE_URL}/${controller}/${id}`);
     const content = await response.json();
     if (response.ok) {
         return content;
@@ -19,7 +21,7 @@ export async function fetchOne(controller, id) {
 }
 
 export async function deleteOne(controller, id) {
-    const response = await fetch(`http://localhost:3000/${controller}/${id}`, {
+    const response = await fetch(`${BASE_URL}/${controller}/${id}`, {
         method: 'DELETE'
     });
     const content = await response.json();
@@ -35,7 +37,7 @@ export async function submitForm(e, controller) {
     let target = e.target;
     let formData = new FormData(target);
     const record = Object.fromEntries(formData.entries());
-    let url = `http://localhost:3000/${controller}`
+    let url = `${BASE_URL}/${controller}`
     let method = "POST";
     if (record.id) {
         method = "PATCH";
