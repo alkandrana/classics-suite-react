@@ -4,11 +4,16 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import './index.css'
 import App from './components/App.jsx'
 import HomePage from "./components/HomePage.jsx";
-import Form from "./components/ui/Form.jsx";
-import Table from "./components/ui/Table.jsx";
 import Authors from "./components/authors/Authors.jsx";
-import Opera from "./components/works/Opera.jsx";
-import {OpusForm} from "./components/works/OpusForm.jsx";
+import Opera from "./components/opera/Opera.jsx";
+import AuthorAdd from "./components/authors/AuthorAdd.jsx";
+import OpusAdd from "./components/opera/OpusAdd.jsx";
+import Opus from "./components/opera/Opus.jsx";
+import FetchOpus from "./utils/FetchOpus.jsx";
+import VocabForm from "./components/vocab/VocabForm.jsx";
+import Login from "./components/account/Login.jsx";
+import Register from "./components/account/Register.jsx";
+import Account from "./components/account/Account.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -16,25 +21,25 @@ createRoot(document.getElementById('root')).render(
             <Routes>
                 <Route path="/" element={<App/>}>
                     <Route index element={<HomePage/>}/>
+                    <Route path="account">
+                        <Route index element={<Account/>}/>
+                        <Route path="register" element={<Register/>}/>
+                        <Route path="login" element={<Login/>}/>
+                    </Route>
                     <Route path="authors">
                         <Route index element={<Authors/>}/>
-                        <Route path="add" element={<Form/>}/>
-                        <Route path=":authorId">
-                            <Route path="edit" element={<Form/>}/>
+                        <Route path="add" element={<AuthorAdd/>}/>
+                    </Route>
+                    <Route path="works" element={<FetchOpus/>}>
+                        <Route index element={<Opera/>}/>
+                        <Route path="add" element={<OpusAdd/>}/>
+                        <Route path=":opusId">
+                            <Route index element={<Opus/>}/>
+                            <Route path="edit" element={<OpusAdd/>}/>
                         </Route>
                     </Route>
-                    <Route path="works">
-                        <Route index element={<Opera/>}/>
-                        <Route path="author">
-                            <Route path=":authorId">
-                                <Route index element={<Table/>}/>
-
-                            </Route>
-                        </Route>
-                        <Route path="add" element={<OpusForm/>}/>
-                        <Route path=":workId">
-                            <Route path="edit" element={<Form/>}/>
-                        </Route>
+                    <Route path="vocab">
+                        <Route path="add" element={<VocabForm/>}/>
                     </Route>
                 </Route>
             </Routes>

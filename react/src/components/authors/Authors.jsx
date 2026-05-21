@@ -1,5 +1,5 @@
-import {useState, useEffect} from "react"
-import Table from "../ui/Table.jsx";
+import {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import {fetchAll} from "../../apiLib.js";
 
 export default function Authors() {
@@ -21,13 +21,27 @@ export default function Authors() {
         getAuthors();
     }, []);
 
-    const cols = {
-        code: "Abbreviation",
-        name: "Common Name",
-        fullName: "Native Name",
-    }
-
     return authors.length > 0 && (
-        <Table records={authors} labels={cols}/>
+        <>
+            <Link to="/authors/add"
+                  className="bg-purple-700 text-white rounded-lg p-3 mb-10 hover:bg-pink-600 transition flex ml-auto w-25">Add
+                New</Link>
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 bg-black mt-5">
+                <div>Abbreviation</div>
+                <div>Common Name</div>
+                <div>Full Name</div>
+            </div>
+
+            {
+                authors.map((author) => (
+                    <div key={author.id}
+                         className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 py-3 bg-gray-700 border-b-black">
+                        <div>{author.code}</div>
+                        <div>{author.name}</div>
+                        <div>{`${author.praenomen || ""} ${author.nomen || ""} ${author.cognomen || ""}`}</div>
+                    </div>
+                ))
+            }
+        </>
     )
 }
