@@ -15,6 +15,8 @@ import Login from "./components/account/Login.jsx";
 import Register from "./components/account/Register.jsx";
 import Profile from "./components/account/Profile.jsx";
 import Account from "./components/account/Account.jsx";
+import Projects from "./components/account/Projects.jsx";
+import VocabList from "./components/account/VocabList.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -27,8 +29,8 @@ createRoot(document.getElementById('root')).render(
                         <Route path="register" element={<Register/>}/>
                         <Route path="login" element={<Login/>}/>
                         <Route path="profile" element={<Profile/>}/>
-                        <Route path="projects"/>
-                        <Route path="vocab"/>
+                        <Route path="projects" element={<Projects/>}/>
+                        <Route path="vocab" element={<VocabList/>}/>
                     </Route>
                     <Route path="authors">
                         <Route index element={<Authors/>}/>

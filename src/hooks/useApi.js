@@ -12,6 +12,7 @@ export default function useApi() {
             'Content-Type': 'application/json',
             'authorization': `Bearer ${sessionStorage.getItem("access_token")}`,
         };
+        if (!options?.credentials) options.credentials = 'include';
         console.log("New config: ", options);
         let response = await fetch(url, options);
         if (response.status === 403) {

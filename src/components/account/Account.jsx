@@ -3,7 +3,7 @@ import Menu from "../ui/Menu.jsx";
 export default function Account() {
 
     return (
-        <>
+        <div className="flex w-full">
             <Menu/>
             <div id="dashboardContent" className="w-full pl-3">
                 <div id="profileCard">
@@ -16,6 +16,6 @@ export default function Account() {
                     <a href="/account/vocab">Vocab Lists</a>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

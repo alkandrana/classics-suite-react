@@ -9,7 +9,7 @@ function App() {
                 <input id="my-drawer-2" type="checkbox" className="drawer-toggle"/>
                 <div className="drawer-content flex flex-col">
                     {/* Navbar */}
-                    <div className="navbar bg-base-300 w-full">
+                    <div className="navbar bg-base-300 w-full text-purple-500">
                         <div className="flex-none lg:hidden">
                             <label htmlFor="my-drawer-2" aria-label="open sidebar" className="btn btn-square btn-ghost">
                                 <svg
@@ -38,7 +38,7 @@ function App() {
                         </div>
                     </div>
                     {/* Page content here */}
-                    <div className="flex w-full">
+                    <div className="">
                         <Outlet/>
                     </div>
                 </div>

@@ -31,7 +31,7 @@ export default function Profile() {
     }, []);
 
     return (
-        <>
+        <div className="flex w-full">
             <Menu/>
             {
                 profile ? (
@@ -44,6 +44,6 @@ export default function Profile() {
             }
 
 
-        </>
+        </div>
     )
 }
