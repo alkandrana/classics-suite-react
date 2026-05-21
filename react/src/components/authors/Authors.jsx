@@ -7,6 +7,7 @@ export default function Authors() {
     useEffect(() => {
         const getAuthors = async () => {
             const authors = await fetchAll("authors");
+            console.log("Fetched: ", authors);
             const displayAuthors = [];
             for (let a of authors) {
                 displayAuthors.push({
@@ -17,6 +18,7 @@ export default function Authors() {
                 });
             }
             setAuthors(displayAuthors);
+            console.log("Configured data: ", displayAuthors);
         }
         getAuthors();
     }, []);
@@ -38,7 +40,7 @@ export default function Authors() {
                          className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 py-3 bg-gray-700 border-b-black">
                         <div>{author.code}</div>
                         <div>{author.name}</div>
-                        <div>{`${author.praenomen || ""} ${author.nomen || ""} ${author.cognomen || ""}`}</div>
+                        <div>{author.fullName}</div>
                     </div>
                 ))
             }
