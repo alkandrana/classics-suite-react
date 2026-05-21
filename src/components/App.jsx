@@ -31,14 +31,14 @@ function App() {
                         <div className="hidden flex-none lg:block">
                             <ul className="menu menu-horizontal">
                                 {/* Navbar menu content here */}
-                                <li><a href="/account">Account</a></li>
+                                <li><a href="/account">Profile</a></li>
                                 <li><a href="/works">Works</a></li>
                                 <li><a href="/authors">Authors</a></li>
                             </ul>
                         </div>
                     </div>
                     {/* Page content here */}
-                    <div className="w-full block">
+                    <div className="flex w-full">
                         <Outlet/>
                     </div>
                 </div>
@@ -46,7 +46,7 @@ function App() {
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
                     <ul className="menu bg-base-200 min-h-full w-80 p-4">
                         {/* Sidebar content here */}
-                        <li><a href="/account/Account"><MdAccountBalance/>&nbsp;Account</a></li>
+                        <li><a href="/account"><MdAccountBalance/>&nbsp;Account</a></li>
                         <li><a href="/authors"><MdPersonPin/>&nbsp;Authors</a></li>
                         <li><a href="/works"><IoBookSharp/>&nbsp;Works</a></li>
                     </ul>

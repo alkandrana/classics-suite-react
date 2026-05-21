@@ -13,6 +13,7 @@ import FetchOpus from "./utils/FetchOpus.jsx";
 import VocabForm from "./components/vocab/VocabForm.jsx";
 import Login from "./components/account/Login.jsx";
 import Register from "./components/account/Register.jsx";
+import Profile from "./components/account/Profile.jsx";
 import Account from "./components/account/Account.jsx";
 
 createRoot(document.getElementById('root')).render(
@@ -25,6 +26,9 @@ createRoot(document.getElementById('root')).render(
                         <Route index element={<Account/>}/>
                         <Route path="register" element={<Register/>}/>
                         <Route path="login" element={<Login/>}/>
+                        <Route path="profile" element={<Profile/>}/>
+                        <Route path="projects"/>
+                        <Route path="vocab"/>
                     </Route>
                     <Route path="authors">
                         <Route index element={<Authors/>}/>
