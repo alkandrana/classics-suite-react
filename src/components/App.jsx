@@ -31,7 +31,7 @@ function App() {
                         <div className="hidden flex-none lg:block">
                             <ul className="menu menu-horizontal">
                                 {/* Navbar menu content here */}
-                                <li><a href="/account">Profile</a></li>
+                                <li><a href="/account">Account</a></li>
                                 <li><a href="/works">Works</a></li>
                                 <li><a href="/authors">Authors</a></li>
                             </ul>

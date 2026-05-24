@@ -24,7 +24,7 @@ createRoot(document.getElementById('root')).render(
             <Routes>
                 <Route path="/" element={<App/>}>
                     <Route index element={<HomePage/>}/>
-                    <Route path="account">
+                    <Route path="account" element={<FetchOpus/>}>
                         <Route index element={<Account/>}/>
                         <Route path="register" element={<Register/>}/>
                         <Route path="login" element={<Login/>}/>
@@ -44,7 +44,7 @@ createRoot(document.getElementById('root')).render(
                             <Route path="edit" element={<OpusAdd/>}/>
                         </Route>
                     </Route>
-                    <Route path="vocab">
+                    <Route path="vocab" element={<FetchOpus/>}>
                         <Route path="add" element={<VocabForm/>}/>
                     </Route>
                 </Route>

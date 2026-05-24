@@ -1,75 +1,134 @@
 import {Link, useNavigate, useParams, useOutletContext} from "react-router-dom";
+import {useEffect, useState} from "react";
+import useApi from "../../hooks/useApi.js";
+import {Vocab} from "../../models/Vocab.js";
+import {VocabInstance} from "../../models/VocabInstance.jsx";
 
 export default function VocabForm() {
     const {vocabId} = useParams();
     console.log("ID: ", vocabId);
-    const repo = useOutletContext();
-    const vocab = repo.vocab.find(v => v.id == vocabId);
-
+    const repos = useOutletContext();
+    const authenticatedFetch = useApi();
+    const [vocabItem, setVocabItem] = useState(null);
+    console.log("Loading repos: ", repos);
     const navigate = useNavigate();
-    console.log("Getting data from Fetch Opus: ", vocab);
+
+    useEffect(() => {
+        const getVocab = async () => {
+            const response = await authenticatedFetch(`http://localhost:3000/vocab/${vocabId}`);
+            let content = await response.json();
+            if (response.ok) {
+                setVocabItem(content);
+                console.log("Fetched entry: ", content);
+            } else {
+                console.log("ERROR: ", response.status, content);
+            }
+        }
+        if (vocabId) {
+            getVocab();
+        }
+    }, []);
 
     async function handleSubmit(e) {
         e.preventDefault();
         let target = e.target;
         let formData = new FormData(target);
-        let newVocab = Object.fromEntries(formData.entries());
-        console.log("Getting data out of form: ", newVocab);
-        let url = 'http://localhost:3001/vocab';
+        let data = Object.fromEntries(formData.entries());
+        console.log("Getting data out of form: ", data);
+        let url = 'http://localhost:3000/vocab';
         let method = 'POST';
         if (vocabId) {
             url += `/${vocabId}`;
             method = 'PATCH';
         }
-        let response = await fetch(url, {
-            method: method,
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newVocab),
-        });
-        const content = await response.json();
-        if (response.ok) {
-            console.log("Vocab updated successfully: ", content);
-            navigate('/vocab');
-        } else {
-            console.log("There was an error updating the vocab: ", response.status, content);
+        const newVocab = new Vocab(data.lemma, data.definition, data.pos, data.languageId);
+        const options = {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newVocab)
         }
+        console.log(newVocab);
+        let response = await authenticatedFetch(url, options);
+        let content = await response.json();
+        if (response.ok) {
+            console.log("Vocab created: ", content);
+            let newVocabId = response.id;
+            const newInstance = new VocabInstance(data.instance, data.form, data.citation, newVocabId);
+            console.log("Preparing Instance: ", newInstance);
+            options.body = JSON.stringify(newInstance);
+            url = 'http://localhost:3000/instances';
+            const response = await authenticatedFetch(url, options);
+            content = await response.json();
+            if (response.ok) {
+                console.log("Vocab added: ", content);
+            } else {
+                console.log("ERROR: ", response.status, content);
+            }
+        } else {
+            console.log("ERROR: ", response.status, content);
+        }
+
+
+        // let response = await authenticatedFetch(url, {
+        //     method: method,
+        //     headers: {'Content-Type': 'application/json'},
+        //     body: JSON.stringify(newVocab),
+        // });
+        // const content = await response.json();
+        // if (response.ok) {
+        //     console.log("Vocab updated successfully: ", content);
+        //     // navigate('/vocab');
+        // } else {
+        //     console.log("There was an error updating the vocab: ", response.status, content);
+        // }
 
 
     }
 
-    return repo.languages.length > 0 && (
+    return repos.languages.length > 0 && (
 
         <form onSubmit={handleSubmit} className="text-left text-pink-500 ml-10">
             <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
-                <label htmlFor="code" className="w-50">Abbreviation</label>
-                <input type="text" id="code" name="code" defaultValue={opus?.code || ""}
+                <label htmlFor="lemma" className="w-50">Dictionary Entry</label>
+                <input type="text" id="lemma" name="lemma" defaultValue={vocabItem?.lemma || ""}
                        className="border border-red-700 rounded"/>
             </div>
             <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
-                <label htmlFor="title">Title</label>
-                <input type="text" id="title" name="title" defaultValue={opus?.title || ""}
+                <label htmlFor="instance">Current Instance</label>
+                <input type="text" id="instance" name="instance" defaultValue={vocabItem?.instance || ""}
+                       className="border border-red-700 rounded"/>
+            </div>
+            <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
+                <label htmlFor="form">Parsing</label>
+                <input type="text" id="form" name="form" defaultValue={vocabItem?.form || ""}
+                       className="border border-red-700 rounded"/>
+            </div>
+            <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
+                <label htmlFor="pos">Part of Speech</label>
+                <input type="text" id="pos" name="pos" defaultValue={vocabItem?.pos || ""}
+                       className="border border-red-700 rounded"/>
+            </div>
+            <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
+                <label htmlFor="definition">Translation</label>
+                <input type="text" id="definition" name="definition" defaultValue={vocabItem?.definition || ""}
                        className="border border-red-700 rounded"/>
             </div>
             <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
                 <label htmlFor="languageId">Language</label>
-                <select id="languageId" name="languageId" defaultValue={opus?.languageId || ""}
+                <select id="languageId" name="languageId" defaultValue={vocabItem?.languageId || ""}
                         className="border border-red-700 rounded">
                     <option value="">select a language</option>
-                    {repo.languages.map((language) => (
+                    {repos.languages.map((language) => (
                         <option key={language.id} value={language.id}>{language.name}</option>
                     ))}
                 </select>
             </div>
-            <div className="flex flex-row gap-4 my-3">
-                <label htmlFor="authorId" className="w-60">Author</label>
-                <select id="authorId" name="authorId" defaultValue={opus?.authorId || ""}
-                        className="border border-red-700 rounded">
-                    <option value="">select an Author</option>
-                    {repo.authors.map((author) => {
-                        return <option key={author.id} value={author.id}>{author.name}</option>
-                    })}
-                </select>
-                <a href="/authors/add" className="text-blue-600 underline text-xs">Add new author</a>
+            <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
+                <label htmlFor="citation">Location in Text</label>
+                <input type="text" id="citation" name="citation" defaultValue={vocabItem?.citation || ""}
+                       className="border border-red-700 rounded"/>
             </div>
             <button type="submit"
                     className="bg-green-800 text-white rounded-lg p-3 mr-2 hover:bg-green-500 transition">Submit
