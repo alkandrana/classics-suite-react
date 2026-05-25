@@ -10,19 +10,18 @@ export default function useApi() {
         options.headers = {
             ...options.headers,
             'Content-Type': 'application/json',
-            'authorization': `Bearer ${sessionStorage.getItem("access_token")}`,
+            'authorization': `Bearer ${sessionStorage.getItem("accessToken")}`,
         };
-        if (!options?.credentials) options.credentials = 'include';
         console.log("New config: ", options);
         let response = await fetch(url, options);
-        if (response.status === 403) {
+        if (response.status === 401) {
             console.log("Token expired. Attempting refresh...");
             try {
                 const mayBeAToken = await refresh();
                 console.log("Might not be a token...", mayBeAToken);
                 if (mayBeAToken) {
-                    sessionStorage.setItem("access_token", mayBeAToken.accessToken);
-                    options.headers['authorization'] = `Bearer ${sessionStorage.getItem("access_token")}`;
+                    sessionStorage.setItem("accessToken", mayBeAToken.accessToken);
+                    options.headers['authorization'] = `Bearer ${sessionStorage.getItem("accessToken")}`;
                     response = await fetch(url, options);
                 } else {
                     console.log("No credentials found. Redirecting to login...");

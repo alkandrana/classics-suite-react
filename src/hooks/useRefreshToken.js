@@ -1,12 +1,13 @@
-export default function useRefreshToken() {
+const url = import.meta.env.VITE_ACCOUNT_URL;
 
+export default function useRefreshToken() {
     const refresh = async () => {
-        const response = await fetch("http://localhost:3000/auth/refresh", {
-            method: "GET",
-            credentials: 'include',
+        const response = await fetch(`${url}/refresh`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
-            }
+            },
+            body: JSON.stringify({refreshToken: sessionStorage.getItem("refreshToken")}),
         });
         let content = await response.json();
         if (response.ok) {

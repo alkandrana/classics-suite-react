@@ -1,6 +1,7 @@
 import Form from "../ui/Form.jsx";
 import {useNavigate} from "react-router-dom";
 
+const loginUrl = import.meta.env.VITE_ACCOUNT_URL;
 export default function Login() {
     const navigate = useNavigate();
 
@@ -11,20 +12,22 @@ export default function Login() {
         const objectContents = formData.entries(); // creates an iterator object that acts like a 2-dimensional
         // array of key-value pairs (i.e., [[username: alkandrana], [password: supersecretpassword]]
         const loginObj = Object.fromEntries(objectContents); // reconstructs above 2-dimensional array into an object
-        console.log(loginObj);
-        const response = await fetch('http://localhost:3000/auth', {
+        const options = {
             method: 'POST',
             body: JSON.stringify(loginObj),
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             }
-        });
+        };
+        console.log("Ready to login with credentials: ", options);
+        console.log("Endpoint: ", loginUrl);
+        const response = await fetch(`${loginUrl}/login`, options);
         let message = await response.json();
         console.log("Request data: ", response);
         if (response.ok) {
             console.log(message);
-            sessionStorage.setItem("access_token", message.accessToken);
+            sessionStorage.setItem("accessToken", message.accessToken);
+            sessionStorage.setItem("refreshToken", message.refreshToken);
             navigate("/account");
         } else {
             console.log("ERROR: ", response.status, message);
@@ -32,7 +35,7 @@ export default function Login() {
     }
 
     const loginFields = {
-        username: {label: 'Username', type: 'text'},
+        email: {label: 'Email', type: 'text'},
         password: {label: 'Password', type: 'password'},
     }
 

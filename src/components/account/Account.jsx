@@ -1,5 +1,4 @@
 import Menu from "../ui/Menu.jsx";
-import Upload from "../ui/Upload.jsx";
 
 export default function Account() {
 
@@ -17,7 +16,6 @@ export default function Account() {
                     <a href="/account/vocab">Vocab Lists</a>
                 </div>
             </div>
-            {/*<Upload/>*/}
         </div>
     )
 }

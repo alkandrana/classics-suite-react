@@ -9,10 +9,6 @@ export default function Register() {
         let target = e.target;
         let formData = new FormData(target);
         const user = Object.fromEntries(formData.entries());
-        let emailPattern = /[A-Za-z0-9.]+@[A-Za-z]+.[a-z]{3}/
-        if (!user.email && emailPattern.test(user.username)) {
-            user.email = user.username;
-        }
         if (user.password !== user.confirmPwd) {
             console.log("Error: Password and Confirm Password fields must match");
             return;
@@ -20,7 +16,7 @@ export default function Register() {
         console.log("User data to submit: ", user);
         const response = await fetch("http://localhost:3000/auth/register", {
             method: "POST",
-            body: JSON.stringify(user),
+            body: JSON.stringify({email: user.email, password: user.password}),
             headers: {
                 "Content-Type": "application/json",
             }
@@ -34,7 +30,6 @@ export default function Register() {
     }
 
     const userFields = {
-        username: {label: "User Name", type: "text"},
         email: {label: "Email", type: "email"},
         password: {label: "Password", type: "password"},
         confirmPwd: {label: "Confirm Password", type: "password"},

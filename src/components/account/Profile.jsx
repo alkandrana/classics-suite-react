@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import useAuthenticatedFetch from '../../hooks/useApi.js';
 import Menu from "../ui/Menu.jsx";
 
+const url = import.meta.env.VITE_ACCOUNT_URL;
+
 export default function Profile() {
     const [profile, setProfile] = useState(null);
     const authenticatedFetch = useAuthenticatedFetch();
@@ -9,12 +11,11 @@ export default function Profile() {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await authenticatedFetch("http://localhost:3000/users/profile", {
+                const response = await authenticatedFetch(`${url}/profile`, {
                     method: "GET",
-                    credentials: 'include',
                     headers: {
                         "Content-Type": "application/json",
-                        "authorization": `Bearer ${sessionStorage.getItem("access_token")}`,
+                        "authorization": `Bearer ${sessionStorage.getItem("accessToken")}`,
                     }
                 });
                 if (response.ok) {
@@ -36,9 +37,9 @@ export default function Profile() {
             {
                 profile ? (
                     <ul className="w-full pl-3">
-                        <li>User Name: {profile.username}</li>
+                        <li>User Name: {profile.userName}</li>
                         <li>Email Address: {profile.email}</li>
-                        <li>Member Since: {profile.createdAt}</li>
+                        <li>Phone: {profile.phoneNumber}</li>
                     </ul>
                 ) : <div className="w-full pl-3">Loading your data...</div>
             }
