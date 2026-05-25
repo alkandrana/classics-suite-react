@@ -16,6 +16,7 @@ import Register from "./components/account/Register.jsx";
 import Profile from "./components/account/Profile.jsx";
 import Account from "./components/account/Account.jsx";
 import Projects from "./components/account/Projects.jsx";
+import ProjectForm from "./components/projects/ProjectForm.jsx";
 import VocabList from "./components/account/VocabList.jsx";
 
 createRoot(document.getElementById('root')).render(
@@ -31,6 +32,12 @@ createRoot(document.getElementById('root')).render(
                         <Route path="profile" element={<Profile/>}/>
                         <Route path="projects" element={<Projects/>}/>
                         <Route path="vocab" element={<VocabList/>}/>
+                    </Route>
+                    <Route path="study">
+                        <Route path="projects">
+                            <Route path="add" element={<ProjectForm/>}/>
+                            <Route path=":projectId" element={<Opus/>}/>
+                        </Route>
                     </Route>
                     <Route path="authors">
                         <Route index element={<Authors/>}/>

@@ -1,26 +1,62 @@
 import {useParams} from "react-router-dom";
 import {deleteOne, fetchOne, submitForm} from "../../utils/api.js";
 import {useEffect, useState} from "react";
+import useApi from "../../hooks/useApi.js";
+
+const url = import.meta.env.VITE_ACCOUNT_URL;
 
 export default function Opus() {
-
+    const authenticatedFetch = useApi();
     const [opus, setOpus] = useState(null);
-    const {opusId} = useParams();
+    const [project, setProject] = useState(null);
+    const {projectId} = useParams();
     const [currentPage, setCurrentPage] = useState(1);
     console.log("Current page: ", currentPage);
 
-    console.log(`In opus: ${opusId}`);
+    console.log(`In project: ${projectId}`);
+    useEffect(() => {
+        const getProject = async () => {
+            const response = await authenticatedFetch(`${url}/projects/${projectId}`);
+            const content = await response.json();
+            if (response.ok) {
+                setProject(content);
+                console.log("Project: ", content);
+            } else {
+                console.log("ERROR: ", response.status, content);
+            }
+        }
+
+
+        // const sections = Object.keys(opus.lines).map(k => Number(k));
+        // const firstSection = Math.min(...sections);
+        // setCurrentPage(firstSection);
+
+        getProject();
+
+
+    }, []);
+
     useEffect(() => {
         const getOpus = async () => {
-            const opus = await fetchOne("works", opusId);
-            console.log("Fetching current work: ", opus);
-            setOpus(opus);
-            const sections = Object.keys(opus.lines).map(k => Number(k));
-            const firstSection = Math.min(...sections);
-            setCurrentPage(firstSection);
+            console.log("Fetching opus");
+            const citation = project.work.split(".").filter(p => p);
+            console.log("Citation: ", citation);
+            const response = await fetch(`http://localhost:3001/works/code/${citation[1].trim().toUpperCase()}`);
+            const content = await response.json();
+            if (response.ok) {
+                //console.log("Author code: ", cont.author.code, "Citation: ", citation[0].trim().toUpperCase());
+                const [opusRecord] = content.filter(o => o.author.code == citation[0].trim().toUpperCase());
+                console.log("Opus: ", opusRecord);
+                setOpus(opusRecord);
+                if (!opusRecord) {
+                    console.log("ERROR: Work not found.");
+                }
+            } else {
+                console.log("ERROR: ", response.status, content);
+            }
         }
         getOpus();
-    }, []);
+    }, [project])
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -64,7 +100,7 @@ export default function Opus() {
                 <h3 className="text-lg font-semibold my-5">{opus.title}</h3>
                 <ul>
                     <li className="my-5"><strong>Abbreviation: </strong>{opus.code}</li>
-                    <li className="my-5"><strong>Language: </strong>{opus.language.name}</li>
+                    <li className="my-5"><strong>Language: </strong>{opus.languageId}</li>
                     <li className="my-5"><strong>Author: </strong>{opus.author.name}</li>
                 </ul>
             </div>
@@ -89,29 +125,29 @@ export default function Opus() {
                 </div>
                 <div id="rows">
 
-                    {
-                        opus.lines[currentPage].map(ln => {
-                            return (
-                                <div key={ln.id} className="flex flex-row gap-4 my-3 text-cyan-300">
-                                    <div className="w-10">{ln.number}</div>
-                                    <div className="w-1/2">{ln.text}</div>
-                                    <div className="w-1/4">{ln.locus}</div>
-                                    <div className="w-1/4">
-                                                    <span onClick={() => handleEdit(ln.id)}
-                                                          className="text-blue-600 underline mr-2 hover:cursor-pointer">
-                                                        Edit
-                                                    </span>
-                                        <span onClick={handleDelete}
-                                              className="text-red-600 underline mr-2 hover:cursor-pointer">Delete</span>
-                                        <a href="/vocab/add"
-                                           className="text-green-600 underline mr-2 hover:cursor-pointer">Add Vocab</a>
-                                    </div>
-                                </div>
+                    {/*{*/}
+                    {/*    opus.lines[currentPage].map(ln => {*/}
+                    {/*        return (*/}
+                    {/*            <div key={ln.id} className="flex flex-row gap-4 my-3 text-cyan-300">*/}
+                    {/*                <div className="w-10">{ln.number}</div>*/}
+                    {/*                <div className="w-1/2">{ln.text}</div>*/}
+                    {/*                <div className="w-1/4">{ln.locus}</div>*/}
+                    {/*                <div className="w-1/4">*/}
+                    {/*                                <span onClick={() => handleEdit(ln.id)}*/}
+                    {/*                                      className="text-blue-600 underline mr-2 hover:cursor-pointer">*/}
+                    {/*                                    Edit*/}
+                    {/*                                </span>*/}
+                    {/*                    <span onClick={handleDelete}*/}
+                    {/*                          className="text-red-600 underline mr-2 hover:cursor-pointer">Delete</span>*/}
+                    {/*                    <a href="/vocab/add"*/}
+                    {/*                       className="text-green-600 underline mr-2 hover:cursor-pointer">Add Vocab</a>*/}
+                    {/*                </div>*/}
+                    {/*            </div>*/}
 
-                            )
-                        })
+                    {/*        )*/}
+                    {/*    })*/}
 
-                    }
+                    {/*}*/}
                     <form id="form" onSubmit={handleSubmit} className="flex flex-row gap-4 hidden">
                         <input autoFocus type="number" id="number" name="number" className="w-10"/>
                         <input type="text" id="text" name="text" className="w-1/2"/>
