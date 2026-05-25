@@ -4,6 +4,8 @@ import useApi from "../../hooks/useApi.js";
 import {Vocab} from "../../models/Vocab.js";
 import {VocabInstance} from "../../models/VocabInstance.jsx";
 
+const baseUrl = import.meta.env.VITE_ACCOUNT_URL;
+
 export default function VocabForm() {
     const {vocabId} = useParams();
     console.log("ID: ", vocabId);
@@ -15,7 +17,7 @@ export default function VocabForm() {
 
     useEffect(() => {
         const getVocab = async () => {
-            const response = await authenticatedFetch(`http://localhost:3000/vocab/${vocabId}`);
+            const response = await authenticatedFetch(`${baseUrl}/vocab/${vocabId}`);
             let content = await response.json();
             if (response.ok) {
                 setVocabItem(content);
@@ -35,7 +37,7 @@ export default function VocabForm() {
         let formData = new FormData(target);
         let data = Object.fromEntries(formData.entries());
         console.log("Getting data out of form: ", data);
-        let url = 'http://localhost:3000/vocab';
+        let url = `${baseUrl}/vocab`;
         let method = 'POST';
         if (vocabId) {
             url += `/${vocabId}`;
@@ -50,24 +52,24 @@ export default function VocabForm() {
             body: JSON.stringify(newVocab)
         }
         console.log(newVocab);
-        let response = await authenticatedFetch(url, options);
-        let content = await response.json();
-        if (response.ok) {
-            console.log("Vocab created: ", content);
-            let newVocabId = response.id;
+        let vocabResponse = await authenticatedFetch(url, options);
+        let vocabContent = await vocabResponse.json();
+        if (vocabResponse.ok) {
+            console.log("Vocab created: ", vocabContent);
+            let newVocabId = vocabResponse.id;
             const newInstance = new VocabInstance(data.instance, data.form, data.citation, newVocabId);
             console.log("Preparing Instance: ", newInstance);
             options.body = JSON.stringify(newInstance);
-            url = 'http://localhost:3000/instances';
-            const response = await authenticatedFetch(url, options);
-            content = await response.json();
-            if (response.ok) {
-                console.log("Vocab added: ", content);
+            url = `${baseUrl}/instances`;
+            const instanceResponse = await authenticatedFetch(url, options);
+            let instanceContent = await instanceResponse.json();
+            if (instanceResponse.ok) {
+                console.log("Vocab added: ", instanceContent);
             } else {
-                console.log("ERROR: ", response.status, content);
+                console.log("ERROR: ", instanceResponse.status, instanceContent);
             }
         } else {
-            console.log("ERROR: ", response.status, content);
+            console.log("ERROR: ", vocabResponse.status, vocabContent);
         }
 
 
