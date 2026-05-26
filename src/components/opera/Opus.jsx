@@ -108,6 +108,22 @@ export default function Opus() {
         console.log(result);
     }
 
+    function toggleVocab() {
+        const vocabDivs = document.querySelectorAll(".vocab");
+        const btn = document.getElementById("vocabBtn");
+        for (let div of vocabDivs) {
+            if (div.classList.contains("hidden")) {
+                div.classList.remove("hidden");
+                div.classList.add("flex", "gap-4");
+                btn.innerHTML = "Hide Vocab";
+            } else {
+                div.classList.add("hidden");
+                div.classList.remove("flex", "gap-4");
+                btn.innerHTML = "Show Vocab";
+            }
+        }
+    }
+
     let $bottom = document.getElementById("addBtn");
     if ($bottom) {
         $bottom.scrollIntoView();
@@ -119,7 +135,7 @@ export default function Opus() {
 
     function getCitationLine(citation) {
         // 1. split into parts
-        const parts = citation.split(".").filter(p => p && p.match(/[A-Za-z]/));
+        const parts = citation.split(".").filter(p => p && p.match(/[A-Za-z0-9]/));
         // 2. map to labels: AUTHOR WORK SECTION LINE
         const sections = {
             author: parts[0],
@@ -128,7 +144,7 @@ export default function Opus() {
             line: parts[parts.length - 1]
         }
         // 3. current line = last section (line)
-        return Number(sections.line);
+        return sections.line;
     }
 
     let vocab;
@@ -138,11 +154,11 @@ export default function Opus() {
     return opus && (
         <>
             <h1>{`${opus.title} by ${opus.author.name}`}</h1>
-            <div className="text-left bg-gray-800 text-amber-400 p-3 rounded w-60">
-                <h3 className="text-lg font-semibold my-5">{opus.title}</h3>
+            <div className="bg-gray-800 text-amber-400 p-3 rounded">
+                <h3 className="text-lg font-semibold my-5">Title: {opus.title}</h3>
                 <ul>
                     <li className="my-5"><strong>Abbreviation: </strong>{opus.code}</li>
-                    <li className="my-5"><strong>Language: </strong>{opus.languageId}</li>
+                    <li className="my-5"><strong>Language: </strong>{opus.language.name}</li>
                     <li className="my-5"><strong>Author: </strong>{opus.author.name}</li>
                 </ul>
             </div>
@@ -158,7 +174,13 @@ export default function Opus() {
             </span>
             </div>
             <div>
-                <h3 className="text-xl bg-black text-purple-500 py-2">{`Book ${currentPage}`}</h3>
+                <div className="flex bg-black">
+                    <h3 className="ml-auto text-xl bg-black text-purple-500 py-2">{`Book ${currentPage}`}</h3>
+                    <button type="button" id="vocabBtn" onClick={toggleVocab}
+                            className="ml-auto w-40 btn bg-green-700 hover:bg-green-400">
+                        Show Vocab
+                    </button>
+                </div>
                 <div id="header" className="flex flex-row gap-4 bg-black text-amber-600 text-left mt-5">
                     <div className="w-10">#</div>
                     <div className="w-1/2">Line</div>
@@ -168,15 +190,17 @@ export default function Opus() {
                 <div id="rows">
                     {
                         opus.lines[currentPage].map(ln => {
-                            const vocabEntries = vocab.filter(v => getCitationLine(v.citation) === ln.number);
-
+                            const vocabEntries = vocab.filter(v => getCitationLine(v.citation) == ln.number);
                             return (
                                 <div key={ln.id} className="flex flex-row gap-4 my-3 text-cyan-300">
                                     <div className="w-10">{ln.number}</div>
                                     <div className="w-1/2">{ln.text}</div>
-                                    <div className="w-1/4">{vocabEntries.map(v => (<>
-                                        <p>{v.vocab.lemma}</p>
-                                        <p>{v.vocab.definition}</p>
+                                    <div
+                                        className="w-1/4 gap-4 text-green-600">{vocabEntries.map(v => (<>
+                                        <div key={v.id} className="hidden vocab">
+                                            <p>{v.vocab.lemma}</p>
+                                            <p>{v.vocab.definition}</p>
+                                        </div>
                                     </>))}</div>
                                     <div className="w-1/4">
                                                     <span onClick={() => handleEdit(ln.id)}
