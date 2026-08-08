@@ -8,15 +8,13 @@ export default function FetchOpus() {
 
     useEffect(() => {
         const getOpera = async () => {
-            const opera = await fetchAll("works");
+            const opera = await fetchAll("opera/complex");
             const authors = await fetchAll("authors");
             const languages = await fetchAll("languages");
-            const lines = await fetchAll("lines");
             const data = {
                 opera: opera,
                 authors: authors,
                 languages: languages,
-                lines: lines
             };
             setRepo(data);
         }

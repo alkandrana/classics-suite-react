@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = "http://localhost:3000";
 
 export async function fetchAll(controller) {
     const response = await fetch(`${BASE_URL}/${controller}`);

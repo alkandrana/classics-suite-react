@@ -11,11 +11,11 @@ import OpusAdd from "./components/opera/OpusAdd.jsx";
 import Opus from "./components/opera/Opus.jsx";
 import FetchOpus from "./utils/FetchOpus.jsx";
 import VocabForm from "./components/vocab/VocabForm.jsx";
-import Login from "./components/account/Login.jsx";
-import Register from "./components/account/Register.jsx";
-import Profile from "./components/account/Profile.jsx";
-import Account from "./components/account/Account.jsx";
-import Projects from "./components/account/Projects.jsx";
+import Login from "./components/account/auth/Login.jsx";
+import Register from "./components/account/auth/Register.jsx";
+import Profile from "./components/account/profile/Profile.jsx";
+import Account from "./components/account/profile/Account.jsx";
+import Projects from "./components/account/projects/Projects.jsx";
 import ProjectForm from "./components/projects/ProjectForm.jsx";
 import VocabList from "./components/account/VocabList.jsx";
 

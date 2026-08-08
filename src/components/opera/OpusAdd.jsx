@@ -5,6 +5,7 @@ export default function OpusAdd() {
     console.log("ID: ", opusId);
     const repo = useOutletContext();
     const opus = repo.opera.find(o => o.id == opusId);
+    console.log(repo.languages);
 
     const navigate = useNavigate();
     console.log("Getting data from Fetch Opus: ", opus);
@@ -15,7 +16,7 @@ export default function OpusAdd() {
         let formData = new FormData(target);
         let newOpus = Object.fromEntries(formData.entries());
         console.log("Getting data out of form: ", newOpus);
-        let url = 'http://localhost:3000/works';
+        let url = 'http://localhost:3000/opera';
         let method = 'POST';
         if (opusId) {
             url += `/${opusId}`;

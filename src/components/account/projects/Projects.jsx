@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import useApi from "../../hooks/useApi.js";
-import Menu from "../ui/Menu.jsx";
+import useApi from "../../../hooks/useApi.js";
+import Menu from "../../ui/Menu.jsx";
 
 const url = import.meta.env.VITE_ACCOUNT_URL;
 

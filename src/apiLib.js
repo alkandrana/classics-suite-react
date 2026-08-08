@@ -1,4 +1,4 @@
-const URL = "http://localhost:3001";
+const URL = "http://localhost:3000";
 
 export async function fetchMetadata(controller) {
     let url = `${URL}/${controller}/metadata`;

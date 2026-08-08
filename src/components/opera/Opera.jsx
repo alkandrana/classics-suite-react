@@ -112,11 +112,6 @@ export default function Opera() {
         </>
     ) : (
         <>
-            <form id="live-search" onSubmit={submitKeyword}>
-                <label htmlFor="title">Search by title: </label>
-                <input type="text" id="title" name="title" onChange={searchByTitle} value={title} autoFocus/>
-                {/*<button type="submit" className="btn bg-gray-700 btn-sm mr-4">Search</button>*/}
-            </form>
             <div className="text-xl text-red-600 font-bold mb-10">No Records Found</div>
             <Link to="/works/add"
                   className="bg-purple-700 text-white rounded-lg p-3 mb-10 hover:bg-pink-600 transition">

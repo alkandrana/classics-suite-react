@@ -1,4 +1,4 @@
-import Form from "../ui/Form.jsx";
+import Form from "../../ui/Form.jsx";
 import {useNavigate} from "react-router-dom";
 
 export default function Register() {

@@ -23,7 +23,7 @@ export default function Authors() {
         getAuthors();
     }, []);
 
-    return authors.length > 0 && (
+    return authors.length > 0 ? (
         <>
             <Link to="/authors/add"
                   className="bg-purple-700 text-white rounded-lg p-3 mb-10 hover:bg-pink-600 transition flex ml-auto w-25">Add
@@ -44,6 +44,14 @@ export default function Authors() {
                     </div>
                 ))
             }
+        </>
+    ) : (
+        <>
+            <div className="text-xl text-red-600 font-bold mb-10">No Records Found</div>
+            <Link to="/authors/add"
+                  className="bg-purple-700 text-white rounded-lg p-3 mb-10 hover:bg-pink-600 transition">
+                Add New
+            </Link>
         </>
     )
 }

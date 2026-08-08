@@ -1,4 +1,4 @@
-import Menu from "../ui/Menu.jsx";
+import Menu from "../../ui/Menu.jsx";
 
 export default function Account() {
 
