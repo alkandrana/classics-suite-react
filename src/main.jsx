@@ -16,6 +16,7 @@ import Register from "./components/account/auth/Register.jsx";
 import Profile from "./components/account/profile/Profile.jsx";
 import Account from "./components/account/profile/Account.jsx";
 import Projects from "./components/account/projects/Projects.jsx";
+import Project from "./components/account/projects/Project.jsx";
 import ProjectForm from "./components/projects/ProjectForm.jsx";
 import VocabList from "./components/account/VocabList.jsx";
 
@@ -36,7 +37,7 @@ createRoot(document.getElementById('root')).render(
                     <Route path="study">
                         <Route path="projects">
                             <Route path="add" element={<ProjectForm/>}/>
-                            <Route path=":projectId" element={<Opus/>}/>
+                            <Route path=":projectId" element={<Project/>}/>
                         </Route>
                     </Route>
                     <Route path="authors">

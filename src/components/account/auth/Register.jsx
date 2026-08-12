@@ -14,19 +14,22 @@ export default function Register() {
             return;
         }
         console.log("User data to submit: ", user);
-        const response = await fetch("http://localhost:3000/auth/register", {
+        const response = await fetch("https://localhost:7192/register", {
             method: "POST",
             body: JSON.stringify({email: user.email, password: user.password}),
             headers: {
                 "Content-Type": "application/json",
             }
         });
-        let message = await response.json();
+        console.log("Successfully sent request: ", response);
         if (response.ok) {
             navigate('/account/login');
+        } else {
+            let message = await response.json();
+            console.log("An error occurred: ", response);
+            console.log(message);
         }
-        console.log("Submission result: ", response);
-        console.log(message);
+
     }
 
     const userFields = {

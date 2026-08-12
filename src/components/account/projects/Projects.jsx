@@ -4,7 +4,7 @@ import Menu from "../../ui/Menu.jsx";
 
 const url = import.meta.env.VITE_ACCOUNT_URL;
 
-export default function Opera() {
+export default function Projects() {
     const [projects, setProjects] = useState([]);
     const authenticatedFetch = useApi();
 

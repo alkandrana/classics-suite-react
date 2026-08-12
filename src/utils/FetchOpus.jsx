@@ -8,7 +8,7 @@ export default function FetchOpus() {
 
     useEffect(() => {
         const getOpera = async () => {
-            const opera = await fetchAll("opera/complex");
+            const opera = await fetchAll("works");
             const authors = await fetchAll("authors");
             const languages = await fetchAll("languages");
             const data = {

@@ -49,7 +49,7 @@ export default function Project() {
             console.log("Project status: ", project);
             const citation = project.work.split(".").filter(p => p && p.match(/[A-Za-z]/)).map(p => p.trim().toUpperCase());
             console.log("Citation: ", citation);
-            const response = await fetch(`http://localhost:3001/works/code/${citation[1]}`);
+            const response = await fetch(`http://localhost:3000/works/code/${citation[1]}`);
             const content = await response.json();
             if (response.ok) {
                 let [opusRecord] = content.filter(o => o.author.code === citation[0]);
