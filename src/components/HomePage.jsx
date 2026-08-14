@@ -1,12 +1,20 @@
-import {Link} from 'react-router-dom'
-
 export default function HomePage() {
     return (
-        <p className="grid grid-cols-2 gap-4">
-            <Link to="/authors"
-                  className="px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-gray-600 transition">Authors</Link>
-            <Link to="/works"
-                  className="px-4 py-2 bg-yellow-700 text-white rounded-lg hover:bg-gray-600 transition">Works</Link>
-        </p>
+        <>
+            <p>[Promotional Placeholder]</p>
+            <div className="grid grid-cols-2 gap-4">
+                <a href="/account/register"
+                   className="px-4 py-2 bg-amber-800 text-white rounded-lg hover:bg-gray-600 transition mx-auto w-50">
+                    Get Started
+                </a>
+                <div>
+                    <p>Already have an account? &nbsp;
+                        <a href="/account/login" className="text-blue-500 underline">
+                            Log in
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </>
     )
 }

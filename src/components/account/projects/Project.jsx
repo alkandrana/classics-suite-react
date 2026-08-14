@@ -211,7 +211,7 @@ export default function Project() {
                                                     </span>
                                         <span onClick={() => handleDelete(ln.id)}
                                               className="text-red-600 underline mr-2 hover:cursor-pointer">Delete</span>
-                                        <a href="/vocab/add"
+                                        <a href={`/vocab/add/${projectId}`}
                                            className="text-green-600 underline mr-2 hover:cursor-pointer">Add Vocab</a>
                                     </div>
                                 </div>

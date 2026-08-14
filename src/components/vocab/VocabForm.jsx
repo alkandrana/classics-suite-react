@@ -8,6 +8,7 @@ const baseUrl = import.meta.env.VITE_ACCOUNT_URL;
 
 export default function VocabForm() {
     const {vocabId} = useParams();
+    const {projectId} = useParams();
     console.log("ID: ", vocabId);
     const repos = useOutletContext();
     const authenticatedFetch = useApi();
@@ -55,10 +56,11 @@ export default function VocabForm() {
         let vocabResponse = await authenticatedFetch(url, options);
         let vocabContent = await vocabResponse.json();
         if (vocabResponse.ok) {
-            console.log("Vocab created: ", vocabContent);
-            let newVocabId = vocabResponse.id;
+            console.log("Vocab created: ", vocabContent, "Status: ", vocabResponse);
+            let newVocabId = vocabContent.id;
             const newInstance = new VocabInstance(data.instance, data.form, data.citation, newVocabId);
             console.log("Preparing Instance: ", newInstance);
+            newInstance.projectId = projectId;
             options.body = JSON.stringify(newInstance);
             url = `${baseUrl}/instances`;
             const instanceResponse = await authenticatedFetch(url, options);

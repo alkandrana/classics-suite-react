@@ -9,9 +9,11 @@ export default function Login() {
         e.preventDefault();
         let target = e.target;
         let formData = new FormData(target);
-        const objectContents = formData.entries(); // creates an iterator object that acts like a 2-dimensional
-        // array of key-value pairs (i.e., [[username: alkandrana], [password: supersecretpassword]]
-        const loginObj = Object.fromEntries(objectContents); // reconstructs above 2-dimensional array into an object
+        // creates an iterator object that acts like a 2-dimensional array of key-value pairs
+        // (i.e., [[username: alkandrana], [password: supersecretpassword]]
+        const objectContents = formData.entries();
+        // reconstructs above 2-dimensional array into an object
+        const loginObj = Object.fromEntries(objectContents);
         const options = {
             method: 'POST',
             body: JSON.stringify(loginObj),
@@ -19,16 +21,15 @@ export default function Login() {
                 'Content-Type': 'application/json',
             }
         };
-        console.log("Ready to login with credentials: ", options);
-        console.log("Endpoint: ", loginUrl);
+        console.log("Logging in...", loginUrl);
         const response = await fetch(`${loginUrl}/login`, options);
         let message = await response.json();
         console.log("Request data: ", response);
         if (response.ok) {
-            console.log(message);
+            console.log(message.keys);
             sessionStorage.setItem("accessToken", message.accessToken);
             sessionStorage.setItem("refreshToken", message.refreshToken);
-            navigate("/account");
+            navigate("/account/profile");
         } else {
             console.log("ERROR: ", response.status, message);
         }
