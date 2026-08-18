@@ -18,6 +18,7 @@ import Projects from "./components/account/projects/Projects.jsx";
 import Project from "./components/account/projects/Project.jsx";
 import ProjectForm from "./components/projects/ProjectForm.jsx";
 import VocabList from "./components/account/VocabList.jsx";
+import ProfileForm from "./components/account/ProfileForm.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -28,7 +29,10 @@ createRoot(document.getElementById('root')).render(
                     <Route path="account" element={<FetchOpus/>}>
                         <Route path="register" element={<Register/>}/>
                         <Route path="login" element={<Login/>}/>
-                        <Route path="profile" element={<Profile/>}/>
+                        <Route path="profile">
+                            <Route index element={<Profile/>}/>
+                            <Route path="edit" element={<ProfileForm/>}/>
+                        </Route>
                         <Route path="projects" element={<Projects/>}/>
                         <Route path="vocab" element={<VocabList/>}/>
                     </Route>
