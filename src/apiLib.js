@@ -1,4 +1,4 @@
-const URL = "http://localhost:3000";
+const URL = import.meta.env.VITE_API_URL;
 
 export async function fetchMetadata(controller) {
     let url = `${URL}/${controller}/metadata`;

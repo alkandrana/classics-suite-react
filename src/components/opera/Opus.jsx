@@ -3,6 +3,7 @@ import {deleteOne, submitForm} from "../../utils/api.js";
 import {useEffect, useState} from "react";
 import {FaRegEdit, FaTrashAlt} from "react-icons/fa";
 
+const url = import.meta.env.VITE_API_URL;
 export default function Opus() {
     const {opusId} = useParams();
     const [opus, setOpus] = useState(null);
@@ -30,7 +31,7 @@ export default function Opus() {
     useEffect(() => {
         const getOpus = async () => {
             console.log("Fetching opus");
-            const response = await fetch(`http://localhost:3000/opera/${opusId}`);
+            const response = await fetch(`${url}opera/${opusId}`);
             const content = await response.json();
             if (response.ok) {
                 setOpus(content);
