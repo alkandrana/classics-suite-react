@@ -1,18 +1,19 @@
-import { useParams } from "react-router-dom";
-import { deleteOne, fetchOne, submitForm } from "../../../utils/api.js";
-import { useEffect, useState } from "react";
+import {useParams} from "react-router-dom";
+import {deleteOne, fetchOne, submitForm} from "../../../utils/api.js";
+import {useEffect, useState} from "react";
 import useApi from "../../../hooks/useApi.js";
+import Tooltip from '../../ui/Tooltip.jsx'
 
 const accountUrl = import.meta.env.VITE_ACCOUNT_URL;
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Project() {
-  const authenticatedFetch = useApi();
-  const [opus, setOpus] = useState(null);
-  const [project, setProject] = useState(null);
-  const { projectId } = useParams();
-  const [currentPage, setCurrentPage] = useState(1);
-  console.log("Rerendering current page: ", currentPage);
+    const authenticatedFetch = useApi();
+    const [opus, setOpus] = useState(null);
+    const [project, setProject] = useState(null);
+    const {projectId} = useParams();
+    const [currentPage, setCurrentPage] = useState(1);
+    console.log("Rerendering current page: ", currentPage);
 
     console.log(`In project: ${projectId}`);
 
@@ -51,6 +52,38 @@ export default function Project() {
         }
     }
 
+    function getCitationLine(citation) {
+        // 1. split into parts
+        const parts = citation.split(".").filter(p => p && p.match(/[A-Za-z0-9]/)).map(p => p.trim());
+        // 2. map to labels: AUTHOR WORK SECTION LINE
+        const sections = {
+            author: parts[0],
+            work: parts[1],
+            book: parts[2],
+            line: parts[parts.length - 1]
+        }
+        // 3. current line = last section (line)
+        return Number(sections.line);
+    }
+
+    function addVocabList(opus, vocabList){
+        const lineObj = opus.lines; // remember this is an object where properties are book numbers
+        const lineKeys = Object.keys(lineObj);
+        for (let k of lineKeys) {
+            for (let i = 0; i < opus.lines[k].length; i++) {
+                let l = opus.lines[k][i];
+                const vocab = [];
+                for (let v of vocabList) {
+                    let ref = getCitationLine(v.citation);
+                    if (ref === l.number) {
+                        vocab.push(v);
+                    }
+                }
+                opus.lines[k][i].vocab = vocab;
+            }
+        }
+    }
+
     useEffect(() => {
         const getProject = async () => {
             const projectResponse = await authenticatedFetch(`${accountUrl}/projects/${projectId}`);
@@ -62,17 +95,11 @@ export default function Project() {
                 console.log("There was a problem fetching the project : ", projectResponse.status, projectContent);
             }
         }
-
-
         getProject();
-
-
     }, []);
 
     useEffect(() => {
         const getOpus = async () => {
-            console.log("Fetching opus");
-            console.log("Project: ", project);
             const opusId = await getOpusIdFromCitation(project.work);
             if (!opusId) {
                 console.log("Work could not be found.");
@@ -80,17 +107,15 @@ export default function Project() {
             }
             const opusRecord = await fetchOne("opera", opusId);
             if (opusRecord) {
-                // TODO: create function to organize the work's lines into pages
                 opusRecord.lines = sortLines(opusRecord.lines);
+                addVocabList(opusRecord, project.vocabList);
                 setOpus(opusRecord);
                 console.log("Opus complex: ", opusRecord);
                 // lines object keys corresponds to the first part of the citation field (typically books)
                 const sections = Object.keys(opusRecord.lines).map(k => Number(k));
-                console.log("Work sections: ", sections);
                 // get the number of the first section so as to set the pagination functionality
                 if (sections.length > 0) {
                     const firstSection = Math.min(...sections);
-                    console.log("First section: ", firstSection);
                     setCurrentPage(firstSection);
                 }
             }
@@ -148,36 +173,44 @@ export default function Project() {
         }
     }
 
+    function buildVocabTooltip(vocabList, line) {
+        /* for (v of vocabList){
+            start = line.text.indexOf(v.instance);
+        }
+         */
+        vocabList.sort((a, b) => line.text.indexOf(a.instance) - line.text.indexOf(b.instance));
+        const tooltips = []
+        for (let v of vocabList) {
+
+        }
+        let lemma = instance.vocab.lemma;
+        let definition = instance.vocab.definition;
+        const tooltip = `${lemma}\n${definition}`;
+        let start = line.text.indexOf(instance.instance)
+        let end = start + instance.instance.length;
+        return (
+            <>
+                {instance.instance.substring(0, start)}
+                <Tooltip text={tooltip}>
+                    {instance.instance.substring(start, end)}
+                </Tooltip>
+                {instance.instance.substring(end)}
+            </>
+        )
+    }
+
+
+
     let $bottom = document.getElementById("addBtn");
     if ($bottom) {
         $bottom.scrollIntoView();
     }
-    if (opus) {
-        console.log("State object is ready: ", opus);
-        console.log("Current page update: ", currentPage);
-    }
 
-    function getCitationLine(citation) {
-        // 1. split into parts
-        const parts = citation.split(".").filter(p => p && p.match(/[A-Za-z0-9]/));
-        // 2. map to labels: AUTHOR WORK SECTION LINE
-        const sections = {
-            author: parts[0],
-            work: parts[1],
-            book: parts[2],
-            line: parts[parts.length - 1]
-        }
-        // 3. current line = last section (line)
-        return sections.line;
-    }
-
-    let vocab;
-    if (project) {
-        vocab = project.vocabList;
-    }
     return opus && (
         <>
+            {/* Work details card */}
             <h1>{`${opus.title} by ${opus.author.name}`}</h1>
+            <Tooltip text="This is a tooltip test">Tooltip</Tooltip>
             <div className="bg-gray-800 text-amber-400 p-3 rounded">
                 <h3 className="text-lg font-semibold my-5">Title: {opus.title}</h3>
                 <ul>
@@ -186,17 +219,19 @@ export default function Project() {
                     <li className="my-5"><strong>Author: </strong>{opus.author.name}</li>
                 </ul>
             </div>
+            {/* Paginator */}
             <div className="w-1/6 flex ml-auto">
-        <span className="text-right text-blue-500 underline hover:cursor-pointer"
-              onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage)}>
-          Previous
-        </span>
+                <span className="text-right text-blue-500 underline hover:cursor-pointer"
+                      onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage)}>
+                  Previous
+                </span>
                 &nbsp;{currentPage}&nbsp;
                 <span className="text-right text-blue-500 underline hover:cursor-pointer"
                       onClick={() => setCurrentPage(currentPage < Object.keys(opus.lines).length ? currentPage + 1 : currentPage)}>
-          Next
-        </span>
+                    Next
+                </span>
             </div>
+            {/* Line by line table listing with vocab viewability */}
             <div>
                 <div className="flex bg-black">
                     <h3 className="ml-auto text-xl bg-black text-purple-500 py-2">{`Book ${currentPage}`}</h3>
@@ -205,38 +240,41 @@ export default function Project() {
                         Show Vocab
                     </button>
                 </div>
+                {/* Header */}
                 <div id="header" className="flex flex-row gap-4 bg-black text-amber-600 text-left mt-5">
                     <div className="w-10">#</div>
                     <div className="w-1/2">Line</div>
                     <div className="w-1/4">Vocab</div>
                     <div className="w-1/4">Actions</div>
                 </div>
+                {/* Lines */}
                 <div id="rows">
                     {
                         opus.lines && opus.lines[currentPage].map(ln => {
-                            const vocabEntries = vocab.filter(v => getCitationLine(v.citation) == ln.number);
+                            // const vocabEntries = vocab.filter(v => getCitationLine(v.citation) == ln.number);
                             return (
                                 <div key={ln.id} className="flex flex-row gap-4 my-3 text-cyan-300">
                                     <div className="w-10">{ln.number}</div>
-                                    <div className="w-1/2">{ln.text}</div>
+                                    <div className="w-1/2">{ln.vocab.reduce((line, v) => buildVocabTooltip(v, ln))}</div>
                                     <div
-                                        className="w-1/4 gap-4 text-green-600">{vocabEntries.map(v => (<>
+                                        className="w-1/4 gap-4 text-green-600">{ln.vocab.map(v => (
                                         <div key={v.id} className="hidden vocab">
                                             <p>{v.vocab.lemma}</p>
                                             <p>{v.vocab.definition}</p>
                                         </div>
-                                    </>))}</div>
+                                    ))}</div>
                                     <div className="w-1/4">
                     <span onClick={() => handleEdit(ln.id)}
                           className="text-blue-600 text-xs underline mr-2 hover:cursor-pointer">
                       Edit
                     </span>
-                    <span onClick={() => handleDelete(ln.id)}
-                      className="text-red-600 text-xs underline mr-2 hover:cursor-pointer">Delete</span>
-                    <a href={`/vocab/instances/add/${projectId}`}
-                      className="text-green-600 text-xs underline mr-2 hover:cursor-pointer">Add Vocab</a>
-                  </div>
-                </div>
+                                        <span onClick={() => handleDelete(ln.id)}
+                                              className="text-red-600 text-xs underline mr-2 hover:cursor-pointer">Delete</span>
+                                        <a href={`/vocab/instances/add/${projectId}`}
+                                           className="text-green-600 text-xs underline mr-2 hover:cursor-pointer">Add
+                                            Vocab</a>
+                                    </div>
+                                </div>
 
                             )
                         })
