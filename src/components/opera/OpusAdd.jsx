@@ -1,5 +1,6 @@
 import {Link, useNavigate, useParams, useOutletContext} from "react-router-dom";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
 export default function OpusAdd() {
     const {opusId} = useParams();
     console.log("ID: ", opusId);
@@ -16,7 +17,7 @@ export default function OpusAdd() {
         let formData = new FormData(target);
         let newOpus = Object.fromEntries(formData.entries());
         console.log("Getting data out of form: ", newOpus);
-        let url = 'http://localhost:3000/opera';
+        let url = `${BASE_URL}/opera`;
         let method = 'POST';
         if (opusId) {
             url += `/${opusId}`;
@@ -38,7 +39,7 @@ export default function OpusAdd() {
 
     }
 
-    return repo.authors.length > 0 && (
+    return repo.authors.length > 0 ? (
 
         <form onSubmit={handleSubmit} className="text-left text-pink-500 ml-10">
             <div className="grid grid-cols-2 gap-4 w-1/2 my-3">
@@ -80,5 +81,9 @@ export default function OpusAdd() {
                 Cancel
             </Link>
         </form>
+    ) : (
+        <div>
+            No Authors exist yet. <a href="/authors/add" className="text-blue-600 underline">Create One</a>
+        </div>
     )
 }

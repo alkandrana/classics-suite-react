@@ -1,10 +1,11 @@
-import {useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import useAuthenticatedFetch from "../../hooks/useApi.js"
 
 export default function ProfileForm() {
     const [user, setUser] = useState(null);
     const authenticatedFetch = useAuthenticatedFetch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -33,6 +34,7 @@ export default function ProfileForm() {
         const content = await res.json();
         if (res.ok) {
             console.log("Profile successfully updated");
+            navigate("/account/profile")
         } else {
             console.log("Error updating user: ", content);
         }
@@ -57,7 +59,7 @@ export default function ProfileForm() {
             </div>
             <div className="grid grid-cols-2 gap-4 w-1/2 my-3 mx-auto">
                 <label htmlFor="phone" className="text-sm font-medium text-gray-400">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" defaultValue={user.phone}
+                <input type="tel" id="phone" name="phoneNumber" defaultValue={user.phone}
                        className="border border-blue-600 rounded"/>
             </div>
             <div className="grid grid-cols-2 gap-4 w-1/2 my-3 ml-auto">
