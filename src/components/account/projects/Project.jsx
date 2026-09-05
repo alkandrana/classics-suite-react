@@ -1,18 +1,18 @@
-import {useParams} from "react-router-dom";
-import {deleteOne, fetchOne, submitForm} from "../../../utils/api.js";
-import {useEffect, useState} from "react";
+import { useParams } from "react-router-dom";
+import { deleteOne, fetchOne, submitForm } from "../../../utils/api.js";
+import { useEffect, useState } from "react";
 import useApi from "../../../hooks/useApi.js";
 
 const accountUrl = import.meta.env.VITE_ACCOUNT_URL;
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Project() {
-    const authenticatedFetch = useApi();
-    const [opus, setOpus] = useState(null);
-    const [project, setProject] = useState(null);
-    const {projectId} = useParams();
-    const [currentPage, setCurrentPage] = useState(1);
-    console.log("Rerendering current page: ", currentPage);
+  const authenticatedFetch = useApi();
+  const [opus, setOpus] = useState(null);
+  const [project, setProject] = useState(null);
+  const { projectId } = useParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  console.log("Rerendering current page: ", currentPage);
 
     console.log(`In project: ${projectId}`);
 
@@ -228,15 +228,15 @@ export default function Project() {
                                     </>))}</div>
                                     <div className="w-1/4">
                     <span onClick={() => handleEdit(ln.id)}
-                          className="text-blue-600 underline mr-2 hover:cursor-pointer">
+                          className="text-blue-600 text-xs underline mr-2 hover:cursor-pointer">
                       Edit
                     </span>
-                                        <span onClick={() => handleDelete(ln.id)}
-                                              className="text-red-600 underline mr-2 hover:cursor-pointer">Delete</span>
-                                        <a href={`/vocab/add/${projectId}`}
-                                           className="text-green-600 underline mr-2 hover:cursor-pointer">Add Vocab</a>
-                                    </div>
-                                </div>
+                    <span onClick={() => handleDelete(ln.id)}
+                      className="text-red-600 text-xs underline mr-2 hover:cursor-pointer">Delete</span>
+                    <a href={`/vocab/instances/add/${projectId}`}
+                      className="text-green-600 text-xs underline mr-2 hover:cursor-pointer">Add Vocab</a>
+                  </div>
+                </div>
 
                             )
                         })

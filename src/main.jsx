@@ -10,6 +10,7 @@ import AuthorAdd from "./components/authors/AuthorAdd.jsx";
 import OpusAdd from "./components/opera/OpusAdd.jsx";
 import Opus from "./components/opera/Opus.jsx";
 import FetchOpus from "./utils/FetchOpus.jsx";
+import InstanceForm from "./components/vocab/InstanceForm.jsx";
 import VocabForm from "./components/vocab/VocabForm.jsx";
 import Login from "./components/account/auth/Login.jsx";
 import Register from "./components/account/auth/Register.jsx";
@@ -56,6 +57,7 @@ createRoot(document.getElementById('root')).render(
                     </Route>
                     <Route path="vocab" element={<FetchOpus/>}>
                         <Route path="add/:projectId" element={<VocabForm/>}/>
+                        <Route path="instances/add/:projectId" element={<InstanceForm/>}/>
                     </Route>
                 </Route>
             </Routes>
