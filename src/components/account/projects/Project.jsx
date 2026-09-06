@@ -43,7 +43,7 @@ export default function Project() {
     function sortLines(lines) {
         if (lines.length > 0) {
             return Object.groupBy(lines, ({locus}) => {
-                let secs = locus.split(".");
+                let secs = locus.split(".").filter(sec => sec.match(/[0-9]/));
                 // 16,1,Hactenus arvorum cultus et sidera caeli:,2.1,1
                 return secs.length === 1 ? "1" : secs[0];
             });
@@ -66,7 +66,7 @@ export default function Project() {
         return Number(sections.line);
     }
 
-    function addVocabList(opus, vocabList){
+    function addVocabList(opus, vocabList) {
         const lineObj = opus.lines; // remember this is an object where properties are book numbers
         const lineKeys = Object.keys(lineObj);
         for (let k of lineKeys) {
@@ -157,60 +157,80 @@ export default function Project() {
         console.log(result);
     }
 
-    function toggleVocab() {
-        const vocabDivs = document.querySelectorAll(".vocab");
-        const btn = document.getElementById("vocabBtn");
-        for (let div of vocabDivs) {
-            if (div.classList.contains("hidden")) {
-                div.classList.remove("hidden");
-                div.classList.add("flex", "gap-4");
-                btn.innerHTML = "Hide Vocab";
-            } else {
-                div.classList.add("hidden");
-                div.classList.remove("flex", "gap-4");
-                btn.innerHTML = "Show Vocab";
-            }
-        }
-    }
+    // function toggleVocab() {
+    //     const vocabDivs = document.querySelectorAll(".vocab");
+    //     const btn = document.getElementById("vocabBtn");
+    //     for (let div of vocabDivs) {
+    //         if (div.classList.contains("hidden")) {
+    //             div.classList.remove("hidden");
+    //             div.classList.add("flex", "gap-4");
+    //             btn.innerHTML = "Hide Vocab";
+    //         } else {
+    //             div.classList.add("hidden");
+    //             div.classList.remove("flex", "gap-4");
+    //             btn.innerHTML = "Show Vocab";
+    //         }
+    //     }
+    // }
 
-    function buildVocabTooltip(vocabList, line) {
-        /* for (v of vocabList){
-            start = line.text.indexOf(v.instance);
-        }
-         */
-        vocabList.sort((a, b) => line.text.indexOf(a.instance) - line.text.indexOf(b.instance));
+    function buildVocabTooltips(vocabList, lineText) {
+        // creates a list of tooltip elements, arranged in the order they occur in the line
         const tooltips = []
         for (let v of vocabList) {
-
+            const tooltipText = `${v.vocab.lemma} = ${v.vocab.definition}`;
+            let start = lineText.indexOf(v.instance)
+            let end = start + v.instance.length;
+            tooltips.push({
+                element:
+                    <Tooltip key={start} text={tooltipText}>
+                        {lineText.substring(start, end)}&nbsp;
+                    </Tooltip>,
+                start: start,
+                end: end
+            });
         }
-        let lemma = instance.vocab.lemma;
-        let definition = instance.vocab.definition;
-        const tooltip = `${lemma}\n${definition}`;
-        let start = line.text.indexOf(instance.instance)
-        let end = start + instance.instance.length;
-        return (
-            <>
-                {instance.instance.substring(0, start)}
-                <Tooltip text={tooltip}>
-                    {instance.instance.substring(start, end)}
-                </Tooltip>
-                {instance.instance.substring(end)}
-            </>
-        )
+        tooltips.sort((a, b) => a.start - b.start);
+        return tooltips;
     }
 
+    function tooltipLine(tooltips, line) {
+        // gets a list of the none-tooltipped sections of the line, joins the to lists together, and sorts them so
+        // that each section occurs in the proper order
+        let start = 0;
+        let spans = [];
+        for (let v of tooltips) {
+            // deinotatoi paidwn, sfeterwi d' hxqonto tokhi
+            spans.push({
+                element: <span key={start}>{line.text.substring(start, v.start)}</span>,
+                start: start,
+                end: v.start
+            });
+            start = v.end;
+        }
+        spans.push({
+            element: <span key={start}>{line.text.substring(start)}</span>,
+            start: start,
+            end: line.text.length
+        });
+        let formattedLine = tooltips.concat(spans);
+        return formattedLine.sort((a, b) => a.start - b.start);
+    }
 
 
     let $bottom = document.getElementById("addBtn");
     if ($bottom) {
         $bottom.scrollIntoView();
     }
+    if (opus) {
+        let tooltips = buildVocabTooltips(opus.lines[1][1].vocab, opus.lines[1][1].text);
+        let lineText = tooltipLine(tooltips, opus.lines[1][1]);
+        console.log("Final version of line: ", lineText);
+    }
 
     return opus && (
         <>
             {/* Work details card */}
             <h1>{`${opus.title} by ${opus.author.name}`}</h1>
-            <Tooltip text="This is a tooltip test">Tooltip</Tooltip>
             <div className="bg-gray-800 text-amber-400 p-3 rounded">
                 <h3 className="text-lg font-semibold my-5">Title: {opus.title}</h3>
                 <ul>
@@ -233,36 +253,24 @@ export default function Project() {
             </div>
             {/* Line by line table listing with vocab viewability */}
             <div>
-                <div className="flex bg-black">
-                    <h3 className="ml-auto text-xl bg-black text-purple-500 py-2">{`Book ${currentPage}`}</h3>
-                    <button type="button" id="vocabBtn" onClick={toggleVocab}
-                            className="ml-auto w-40 btn bg-green-700 hover:bg-green-400">
-                        Show Vocab
-                    </button>
+                <div className="bg-black">
+                    <h3 className="ml-auto text-xl text-center bg-black text-purple-500 py-2">{`Book ${currentPage}`}</h3>
                 </div>
                 {/* Header */}
                 <div id="header" className="flex flex-row gap-4 bg-black text-amber-600 text-left mt-5">
                     <div className="w-10">#</div>
                     <div className="w-1/2">Line</div>
-                    <div className="w-1/4">Vocab</div>
                     <div className="w-1/4">Actions</div>
                 </div>
                 {/* Lines */}
                 <div id="rows">
                     {
                         opus.lines && opus.lines[currentPage].map(ln => {
-                            // const vocabEntries = vocab.filter(v => getCitationLine(v.citation) == ln.number);
+                            const tooltips = buildVocabTooltips(ln.vocab, ln.text);
                             return (
                                 <div key={ln.id} className="flex flex-row gap-4 my-3 text-cyan-300">
                                     <div className="w-10">{ln.number}</div>
-                                    <div className="w-1/2">{ln.vocab.reduce((line, v) => buildVocabTooltip(v, ln))}</div>
-                                    <div
-                                        className="w-1/4 gap-4 text-green-600">{ln.vocab.map(v => (
-                                        <div key={v.id} className="hidden vocab">
-                                            <p>{v.vocab.lemma}</p>
-                                            <p>{v.vocab.definition}</p>
-                                        </div>
-                                    ))}</div>
+                                    <div className="w-1/2">{tooltipLine(tooltips, ln).map(t => t.element)}</div>
                                     <div className="w-1/4">
                     <span onClick={() => handleEdit(ln.id)}
                           className="text-blue-600 text-xs underline mr-2 hover:cursor-pointer">
