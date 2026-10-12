@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {deleteOne, fetchOne, submitForm} from "../../../utils/api.js";
 import {useEffect, useState} from "react";
 import useApi from "../../../hooks/useApi.js";
@@ -13,6 +13,7 @@ export default function Project() {
     const [project, setProject] = useState(null);
     const {projectId} = useParams();
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
     console.log("Rerendering current page: ", currentPage);
 
     console.log(`In project: ${projectId}`);
@@ -24,16 +25,17 @@ export default function Project() {
         console.log("Citation Parts:", citationParts);
         const response = await fetch(`${apiUrl}/opera/code/${citationParts[1]}`);
         const content = await response.json();
-        console.log("Got opus from citation: ", content);
+        console.log("Got opus from citation: ", content, response.status);
         if (response.ok) {
-            // console.log("Author Code: ", content.filter(p => p.author.code == citation);
-            const [opusRecord] = content.filter(p => p.author.code === citationParts[0]);
+            console.log("Author Code: ", content.filter(p => p.author.code.toLowerCase() === citationParts[0].toLowerCase()));
+            const [opusRecord] = content.filter(p => p.author.code.toLowerCase() === citationParts[0].toLowerCase());
             console.log("After filter:", opusRecord);
-            if (!opusRecord) {
-                return null
-            } else {
+            if (opusRecord) {
                 return opusRecord.id;
             }
+        } else if (response.status === 404) {
+            console.log("That work doesn't exist yet. Redirecting...");
+            navigate("/works/add");
         } else {
             console.log("There was a problem fetching the work: ", content, (await response).status);
         }
@@ -48,7 +50,7 @@ export default function Project() {
                 return secs.length === 1 ? "1" : secs[0];
             });
         } else {
-            return null;
+            return {};
         }
     }
 
@@ -109,8 +111,6 @@ export default function Project() {
             if (opusRecord) {
                 opusRecord.lines = sortLines(opusRecord.lines);
                 addVocabList(opusRecord, project.vocabList);
-                setOpus(opusRecord);
-                console.log("Opus complex: ", opusRecord);
                 // lines object keys corresponds to the first part of the citation field (typically books)
                 const sections = Object.keys(opusRecord.lines).map(k => Number(k));
                 // get the number of the first section so as to set the pagination functionality
@@ -118,6 +118,9 @@ export default function Project() {
                     const firstSection = Math.min(...sections);
                     setCurrentPage(firstSection);
                 }
+                setOpus(opusRecord);
+                console.log("Opus complex: ", opusRecord);
+
             }
         }
         if (project) {
@@ -221,7 +224,7 @@ export default function Project() {
     if ($bottom) {
         $bottom.scrollIntoView();
     }
-    if (opus) {
+    if (opus && Object.keys(opus.lines).length > 0) {
         let tooltips = buildVocabTooltips(opus.lines[1][1].vocab, opus.lines[1][1].text);
         let lineText = tooltipLine(tooltips, opus.lines[1][1]);
         console.log("Final version of line: ", lineText);
@@ -265,7 +268,7 @@ export default function Project() {
                 {/* Lines */}
                 <div id="rows">
                     {
-                        opus.lines && opus.lines[currentPage].map(ln => {
+                        Object.keys(opus.lines).length > 0 && opus.lines[currentPage].map(ln => {
                             const tooltips = buildVocabTooltips(ln.vocab, ln.text);
                             return (
                                 <div key={ln.id} className="flex flex-row gap-4 my-3 text-cyan-300">

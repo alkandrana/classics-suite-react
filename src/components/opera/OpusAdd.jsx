@@ -1,37 +1,71 @@
 import {Link, useNavigate, useParams, useOutletContext} from "react-router-dom";
+import {useState} from "react";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 export default function OpusAdd() {
     const {opusId} = useParams();
-    console.log("ID: ", opusId);
+    const [errors, setErrors] = useState({});
     const repo = useOutletContext();
     const opus = repo.opera.find(o => o.id == opusId);
-    console.log(repo.languages);
+    // console.log(repo.languages);
 
     const navigate = useNavigate();
-    console.log("Getting data from Fetch Opus: ", opus);
+
+    // console.log("Getting data from Fetch Opus: ", opus);
 
     async function handleSubmit(e) {
         e.preventDefault();
-        let target = e.target;
+        // extract data from form
+        let target = e.currentTarget;
         let formData = new FormData(target);
-        let newOpus = Object.fromEntries(formData.entries());
-        console.log("Getting data out of form: ", newOpus);
+        let formValues = Object.fromEntries(formData.entries());
+        const {code, title, languageId, authorId} = formValues;
+
+        // validate data
+        const newErrors = {};
+        if (!code) {
+            newErrors.code = "Abbreviation cannot be empty";
+        }
+        if (!title) {
+            newErrors.title = "Title cannot be empty";
+        }
+        if (!languageId) {
+            newErrors.languageId = "Please select a language";
+        }
+        if (!authorId) {
+            newErrors.authorId = "Please select an author";
+        }
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            console.log("One or more validation errors occurred: ", newErrors);
+            if (newErrors.authorId) {
+                navigate("/authors/add")
+            }
+            return;
+        }
+
+        // construct request
+        setErrors({});
+        console.log("Form data successfully validated: ", formValues);
         let url = `${BASE_URL}/opera`;
         let method = 'POST';
         if (opusId) {
             url += `/${opusId}`;
             method = 'PATCH';
         }
+
+        // submit validated data
         let response = await fetch(url, {
             method: method,
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newOpus),
+            body: JSON.stringify(formValues),
         });
         const content = await response.json();
+
+        // check response status
         if (response.ok) {
             console.log("Work updated successfully: ", content);
-            navigate('/works');
+            navigate(-1);
         } else {
             console.log("There was an error updating the work: ", response.status, content);
         }
