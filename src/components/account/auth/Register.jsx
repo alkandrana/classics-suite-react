@@ -14,7 +14,7 @@ export default function Register() {
             return;
         }
         console.log("User data to submit: ", user);
-        const response = await fetch("https://localhost:7192/register", {
+        const response = await fetch("http://localhost:5232/register", {
             method: "POST",
             body: JSON.stringify({email: user.email, password: user.password}),
             headers: {

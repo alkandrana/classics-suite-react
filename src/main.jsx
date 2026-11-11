@@ -27,7 +27,7 @@ createRoot(document.getElementById('root')).render(
             <Routes>
                 <Route path="/" element={<App/>}>
                     <Route index element={<HomePage/>}/>
-                    <Route path="account" element={<FetchOpus/>}>
+                    <Route path="account" >
                         <Route path="register" element={<Register/>}/>
                         <Route path="login" element={<Login/>}/>
                         <Route path="profile">
@@ -47,7 +47,7 @@ createRoot(document.getElementById('root')).render(
                         <Route index element={<Authors/>}/>
                         <Route path="add" element={<AuthorAdd/>}/>
                     </Route>
-                    <Route path="works" element={<FetchOpus/>}>
+                    <Route path="works">
                         <Route index element={<Opera/>}/>
                         <Route path="add" element={<OpusAdd/>}/>
                         <Route path=":opusId">
@@ -55,7 +55,7 @@ createRoot(document.getElementById('root')).render(
                             <Route path="edit" element={<OpusAdd/>}/>
                         </Route>
                     </Route>
-                    <Route path="vocab" element={<FetchOpus/>}>
+                    <Route path="vocab">
                         <Route path="add/:projectId" element={<VocabForm/>}/>
                         <Route path="instances/add/:projectId" element={<InstanceForm/>}/>
                     </Route>

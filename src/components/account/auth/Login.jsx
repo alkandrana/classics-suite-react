@@ -1,37 +1,37 @@
 import Form from "../../ui/Form.jsx";
 import {useNavigate} from "react-router-dom";
 
-const loginUrl = import.meta.env.VITE_ACCOUNT_URL;
 export default function Login() {
     const navigate = useNavigate();
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // get credentials out of form
         let target = e.target;
         let formData = new FormData(target);
-        // creates an iterator object that acts like a 2-dimensional array of key-value pairs
-        // (i.e., [[username: alkandrana], [password: supersecretpassword]]
-        const objectContents = formData.entries();
-        // reconstructs above 2-dimensional array into an object
-        const loginObj = Object.fromEntries(objectContents);
+        const loginObj = Object.fromEntries(formData.entries());
+
+        // construct request
         const options = {
             method: 'POST',
             body: JSON.stringify(loginObj),
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            credentials: 'include'
         };
-        console.log("Logging in...", loginUrl);
-        const response = await fetch(`${loginUrl}/login`, options);
-        let message = await response.json();
-        console.log("Request data: ", response);
+
+        // send request
+        const response = await fetch(`http://localhost:5232/login?useCookies=true`, options);
+        // let message = await response.json();
         if (response.ok) {
-            console.log(message.keys);
-            sessionStorage.setItem("accessToken", message.accessToken);
-            sessionStorage.setItem("refreshToken", message.refreshToken);
-            navigate("/account/profile");
+            console.log(response);
+            console.log("Logged in successfully.");
+            // navigate("/account/profile");
         } else {
-            console.log("ERROR: ", response.status, message);
+            console.log("ERROR: ", response.status, response);
         }
     }
 
