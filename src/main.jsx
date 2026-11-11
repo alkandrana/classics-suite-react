@@ -1,63 +1,23 @@
-import {StrictMode} from 'react'
-import {createRoot} from 'react-dom/client'
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './index.css'
 import App from './components/App.jsx'
 import HomePage from "./components/HomePage.jsx";
-import Authors from "./components/authors/Authors.jsx";
-import Opera from "./components/opera/Opera.jsx";
-import AuthorAdd from "./components/authors/AuthorAdd.jsx";
-import OpusAdd from "./components/opera/OpusAdd.jsx";
-import Opus from "./components/opera/Opus.jsx";
-import FetchOpus from "./utils/FetchOpus.jsx";
-import InstanceForm from "./components/vocab/InstanceForm.jsx";
-import VocabForm from "./components/vocab/VocabForm.jsx";
-import Login from "./components/account/auth/Login.jsx";
-import Register from "./components/account/auth/Register.jsx";
-import Profile from "./components/account/Profile.jsx";
-import Projects from "./components/account/projects/Projects.jsx";
-import Project from "./components/account/projects/Project.jsx";
-import ProjectForm from "./components/projects/ProjectForm.jsx";
-import VocabList from "./components/account/VocabList.jsx";
-import ProfileForm from "./components/account/ProfileForm.jsx";
+import AddAuthor from './components/AddAuthor.jsx';
+import AddOpus from './components/AddOpus.jsx';
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<App/>}>
-                    <Route index element={<HomePage/>}/>
-                    <Route path="account" >
-                        <Route path="register" element={<Register/>}/>
-                        <Route path="login" element={<Login/>}/>
-                        <Route path="profile">
-                            <Route index element={<Profile/>}/>
-                            <Route path="edit" element={<ProfileForm/>}/>
-                        </Route>
-                        <Route path="projects" element={<Projects/>}/>
-                        <Route path="vocab" element={<VocabList/>}/>
+                <Route path="/" element={<App />}>
+                    <Route index element={<HomePage />} />
+                    <Route path="author">
+                        <Route path="add" element={<AddAuthor />} />
                     </Route>
-                    <Route path="study">
-                        <Route path="projects">
-                            <Route path="add" element={<ProjectForm/>}/>
-                            <Route path=":projectId" element={<Project/>}/>
-                        </Route>
-                    </Route>
-                    <Route path="authors">
-                        <Route index element={<Authors/>}/>
-                        <Route path="add" element={<AuthorAdd/>}/>
-                    </Route>
-                    <Route path="works">
-                        <Route index element={<Opera/>}/>
-                        <Route path="add" element={<OpusAdd/>}/>
-                        <Route path=":opusId">
-                            <Route index element={<Opus/>}/>
-                            <Route path="edit" element={<OpusAdd/>}/>
-                        </Route>
-                    </Route>
-                    <Route path="vocab">
-                        <Route path="add/:projectId" element={<VocabForm/>}/>
-                        <Route path="instances/add/:projectId" element={<InstanceForm/>}/>
+                    <Route path="work">
+                        <Route path="add" element={<AddOpus />} />
                     </Route>
                 </Route>
             </Routes>

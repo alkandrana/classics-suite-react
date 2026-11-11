@@ -1,12 +1,12 @@
-import {Outlet} from 'react-router-dom';
-import {IoBookSharp} from 'react-icons/io5';
-import {MdPersonPin, MdAccountBalance} from 'react-icons/md';
+import { Outlet } from 'react-router-dom';
+import { IoBookSharp } from 'react-icons/io5';
+import { MdPersonPin, MdAccountBalance } from 'react-icons/md';
 
 function App() {
     return (
         <div id="main">
             <div className="drawer">
-                <input id="my-drawer-2" type="checkbox" className="drawer-toggle"/>
+                <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
                 <div className="drawer-content flex flex-col">
                     {/* Navbar */}
                     <div className="navbar bg-base-300 w-full text-purple-500">
@@ -31,24 +31,20 @@ function App() {
                         <div className="hidden flex-none lg:block">
                             <ul className="menu menu-horizontal">
                                 {/* Navbar menu content here */}
-                                <li><a href="/account/profile">Profile</a></li>
-                                <li><a href="/account/projects">Projects</a></li>
-                                <li><a href="/account/vocab">Vocab</a></li>
+                                <li><a href="/author/add">New Author</a></li>
+                                <li><a href="/work/add">New Work</a></li>
                             </ul>
                         </div>
                     </div>
                     {/* Page content here */}
                     <div className="">
-                        <Outlet/>
+                        <Outlet />
                     </div>
                 </div>
                 <div className="drawer-side">
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
                     <ul className="menu bg-base-200 min-h-full w-80 p-4">
                         {/* Sidebar content here */}
-                        <li><a href="/account"><MdAccountBalance/>&nbsp;Account</a></li>
-                        <li><a href="/authors"><MdPersonPin/>&nbsp;Authors</a></li>
-                        <li><a href="/works"><IoBookSharp/>&nbsp;Works</a></li>
                     </ul>
                 </div>
             </div>
