@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react"
-import SimpleInput from "./form/SimpleInput";
-import Select from "./form/Select";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SimpleInput from "../form/SimpleInput";
+import Select from "../form/Select";
 
 export default function AddOpus() {
     const [success, setSuccess] = useState("");
     const [errors, setErrors] = useState([]);
     const [authors, setAuthors] = useState([]);
     const [languages, setLanguages] = useState([]);
-
+    const navigate = useNavigate();
     const getFormData = (e) => {
         e.preventDefault();
         let target = e.currentTarget;
@@ -58,6 +59,7 @@ export default function AddOpus() {
         if (result.status == "success") {
             setSuccess("Work created successfully");
             console.log(result.data);
+            navigate("/")
         } else {
             setErrors(result.errors);
         }
