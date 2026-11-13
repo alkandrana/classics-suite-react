@@ -1,60 +1,18 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
+import { getFormData, buildSubmitRequest } from "../utils/form_utils";
+import { sendRequest } from "../utils/api_utils";
 import SimpleInput from "./form/SimpleInput";
-import authorProps from "../models/Author";
 
 export default function AddAuthor() {
     const [success, setSuccess] = useState("");
     const [errors, setErrors] = useState([]);
     const navigate = useNavigate();
 
-    const getFormData = (e) => {
-        e.preventDefault();
-        let target = e.currentTarget;
-        const formData = new FormData(target);
-        const data = Object.fromEntries(formData.entries());
-        e.currentTarget.reset();
-        console.log("Data retrieved from form: ", data);
-        return data;
-    }
-
-    const buildRequest = (data, endpoint) => {
-        return {
-            url: `http://localhost:5232/${endpoint}`,
-            options: {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: 'include'
-            }
-        }
-    }
-
-    const handleSubmit = async (request) => {
-        const result = {};
-        const response = await fetch(request.url, request.options);
-        try {
-            if (response.ok) {
-                result.status = "success"
-                const content = await response.json();
-                result.data = content;
-            } else {
-                result.status = "error"
-                const content = await response.json();
-                result.errors.push(content)
-            }
-        } catch (err) {
-            result.errors.push(`Generic Error: ${e.name}: No response returned.`);
-        }
-        return result;
-    }
-
     const handleAddAuthor = async (e) => {
         const data = getFormData(e);
-        const request = buildRequest(data, "authors");
-        const result = await handleSubmit(request);
+        const request = buildSubmitRequest(data, "authors");
+        const result = await sendRequest(request);
         if (result.status == "success") {
             setSuccess("Author created successfully");
             console.log(result.data);
@@ -63,8 +21,6 @@ export default function AddAuthor() {
             setErrors(result.errors);
         }
     }
-
-
 
     return (
         <>
