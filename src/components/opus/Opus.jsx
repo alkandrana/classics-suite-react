@@ -69,13 +69,13 @@ export default function Opus() {
                         ))}
                         <tr>
                             <td colSpan="2">
-                                <form onSubmit={handleSubmitLine} className="grid grid-cols-4 gap-4 hidden" id="newLineForm">
+                                <form onSubmit={handleSubmitLine} className="grid grid-cols-12 gap-4 hidden" id="newLineForm">
 
-                                    <input type="number" name="number" />
-                                    <input type="text" name="text" />
+                                    <input className="col-span-2" type="number" name="number" />
+                                    <input className="col-span-6" type="text" name="text" />
                                     <input type="hidden" name="opusId" value={opus.id} />
-                                    <input type="text" name="locus" />
-                                    <button className="bg-gray-500 p-2 rounded" type="submit">Add</button>
+                                    <input className="col-span-2" type="text" name="locus" />
+                                    <button className="col-span-2 bg-gray-500 p-2 rounded" type="submit">Add</button>
                                 </form>
                                 <button id="newLineBtn" onClick={handleNewLine} className="bg-blue-600 p-3 rounded-lg block mx-auto cursor-pointer" type="button">Add New Line</button>
                             </td>
