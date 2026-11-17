@@ -1,6 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import { IoBookSharp } from 'react-icons/io5';
-import { MdPersonPin, MdAccountBalance } from 'react-icons/md';
 
 function App() {
     return (
@@ -32,6 +30,7 @@ function App() {
                             <ul className="menu menu-horizontal">
                                 {/* Navbar menu content here */}
                                 <li><a href="/">Home</a></li>
+                                <li><a href="/account/login">Login</a></li>
                                 <li><a href="/author/add">New Author</a></li>
                                 <li><a href="/work/add">New Work</a></li>
                             </ul>

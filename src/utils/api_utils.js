@@ -2,26 +2,24 @@ const fetchOne = async (recordId, endpoint) => {
     const request = {
         url: `http://localhost:5232/${endpoint}/${recordId}`,
         options: {
-            method: "GET"
+            method: "GET",
+            credentials: 'include'
         }
     }
     const result = await sendRequest(request);
     return result;
 }
 
-const fetchAll = async (endpoint, setter) => {
+const fetchAll = async (endpoint) => {
     const request = {
         url: `http://localhost:5232/${endpoint}`,
         options: {
-            method: "GET"
+            method: "GET",
+            credentials: 'include'
         }
     }
     const result = await sendRequest(request);
-    if (result.status == "success") {
-        setter(result.data);
-    } else {
-        setErrors(result.errors);
-    }
+    return result;
 }
 
 const sendRequest = async (request) => {
@@ -36,16 +34,16 @@ const sendRequest = async (request) => {
             result.status = "error"
             const content = await response.json();
             if (result.errors) {
-                result.errors.push(content)
+                result.errors.push(`${response.status}: ${content}`);
             } else {
-                result.errors = [content]
+                result.errors = [`${response.status}: ${content}`]
             }
         }
     } catch (err) {
         if (result.errors) {
-            result.errors.push(`Generic Error: ${err.name}: No response returned.`);
+            result.errors.push(`Generic Error: ${response.status}: ${err.name}: No response returned.`);
         } else {
-            result.errors = [`Generic Error: ${err.name}: No response returned.`]
+            result.errors = [`Generic Error: ${response.status}: ${err.name}: No response returned.`]
         }
     }
     return result;

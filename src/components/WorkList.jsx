@@ -31,8 +31,8 @@ export default function WorkList() {
     return works && (
         <>
             <div className="bg-amber-700">Found {works.length} works.</div>
-            {errors.length > 0 && errors.map((e) => (
-                <h2 className="bg-red-500 text-lg">{e}</h2>
+            {errors.length > 0 && errors.map((e, i) => (
+                <h2 key={i} className="bg-red-500 text-lg">{e}</h2>
             ))}
             <div className="grid grid-cols-5 gap-4 font-bold">
                 <p className="border">Code</p>
@@ -42,7 +42,7 @@ export default function WorkList() {
                 <p className="border">Actions</p>
             </div>
             {works.map((w) => (
-                <div className="grid grid-cols-5 gap-4">
+                <div key={w.id} className="grid grid-cols-5 gap-4">
                     <p>{w.code}</p>
                     <p>{w.title}</p>
                     <p>{w.author?.name}</p>
