@@ -6,43 +6,55 @@ import SimpleInput from "../form/SimpleInput";
 import Select from "../form/Select";
 
 export default function AddOpus() {
-    const [success, setSuccess] = useState("");
-    const [errors, setErrors] = useState([]);
-    const [authors, setAuthors] = useState([]);
-    const [languages, setLanguages] = useState([]);
-    const navigate = useNavigate();
+  const [success, setSuccess] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [authors, setAuthors] = useState([]);
+  const [languages, setLanguages] = useState([]);
+  const navigate = useNavigate();
 
-    const handleAddOpus = async (e) => {
-        const data = getFormData(e);
-        const request = buildSubmitRequest(data, "opera");
-        const result = await sendRequest(request);
-        if (result.status == "success") {
-            setSuccess("Work created successfully");
-            console.log(result.data);
-            navigate("/")
-        } else {
-            setErrors(result.errors);
-        }
+  const handleAddOpus = async (e) => {
+    const data = getFormData(e);
+    const request = buildSubmitRequest(data, "opera");
+    const result = await sendRequest(request);
+    if (result.status == "success") {
+      setSuccess("Work created successfully");
+      console.log(result.data);
+      navigate("/")
+    } else {
+      setErrors(result.errors);
     }
+  }
 
-    useEffect(() => {
-        fetchAll("authors", setAuthors);
-        fetchAll("languages", setLanguages);
-    }, []);
+  useEffect(() => {
+    fetchAll("authors").then((result) => {
+      if (result.status == "success") {
+        setAuthors(result.data);
+      } else {
+        setErrors(result.errors);
+      }
+    });
+    fetchAll("languages").then((result) => {
+      if (result.status == "success") {
+        setLanguages(result.data);
+      } else {
+        setErrors(result.errors);
+      }
+    });
+  }, []);
 
-    return (
-        <>
-            {errors.length > 0 && errors.map((err) => (<div className="text-red-500">{err}</div>))}
-            <div className="text-green-500">{success && success}</div>
+  return languages.length > 0 && (
+    <>
+      {errors.length > 0 && errors.map((err) => (<div className="text-red-500">{err}</div>))}
+      <div className="text-green-500">{success && success}</div>
 
-            <form onSubmit={handleAddOpus}>
-                <SimpleInput label="Abbreviation" name="code" datatype="text" />
-                <SimpleInput label="Title" name="title" datatype="text" />
-                <Select records={languages} label="Language" name="languageId" />
-                <Select records={authors} label="Author" name="authorId" />
-                <button type="submit" className="bg-green-800 cursor-pointer p-3 rounded">Add Work</button>
-            </form>
-        </>
-    )
+      <form onSubmit={handleAddOpus}>
+        <SimpleInput label="Abbreviation" name="code" datatype="text" />
+        <SimpleInput label="Title" name="title" datatype="text" />
+        <Select records={languages} label="Language" name="languageId" />
+        <Select records={authors} label="Author" name="authorId" />
+        <button type="submit" className="bg-green-800 cursor-pointer p-3 rounded">Add Work</button>
+      </form>
+    </>
+  )
 }
 
