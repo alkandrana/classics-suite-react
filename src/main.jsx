@@ -10,6 +10,7 @@ import Opus from './components/opus/Opus.jsx';
 import Study from './components/Study.jsx';
 import Register from './components/account/Register.jsx'
 import Login from './components/account/Login.jsx'
+import AddVocab from './components/AddVocab.jsx'
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -30,6 +31,9 @@ createRoot(document.getElementById('root')).render(
                     </Route>
                     <Route path="study" >
                         <Route path=":workId" element={<Study/>}/>
+                    </Route>
+                    <Route path="vocab">
+                        <Route path="add/:lineId" element={<AddVocab/>} />
                     </Route>
                 </Route>
             </Routes>

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { getFormData, buildSubmitRequest } from "../utils/form_utils.js";
 import { sendRequest, fetchOne } from "../utils/api_utils";
+
 export default function Poem({endpoint, workId}){
+
     const [lineAdd, setLineAdd] = useState(false);
     const [errors, setErrors] = useState([]);
     const [work, setWork] = useState(null);
@@ -52,6 +54,7 @@ export default function Poem({endpoint, workId}){
                     <tr>
                         <th className="p-3 w-50" scope="col">Line Number</th>
                         <th className="p-3" scope="col">Text</th>
+                        <th className="p-3" >Actions</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -59,6 +62,9 @@ export default function Poem({endpoint, workId}){
                     <tr key={lnum}>
                         <td>{lnum}</td>
                         <td>{work.lines[key][lnum]}</td>
+                        <td>
+                            <a className="text-blue-600 underline" href="/vocab/add/{">Add vocab</a>
+                        </td>
                     </tr>
                     ))}
                     <tr>
