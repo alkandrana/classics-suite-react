@@ -4,32 +4,34 @@ import { sendRequest } from "../../utils/api_utils";
 import { useState } from "react";
 import Auth from "../form/Auth";
 
-export default function Login(){
+export default function Login() {
     const navigate = useNavigate();
     const [errors, setErrors] = useState([]);
 
-    const handleSubmitForm = async(e) => {
+    const handleSubmitForm = async (e) => {
         const data = getFormData(e);
-        console.log(data)
+        // console.log(data)
         const request = buildSubmitRequest(data, "login?useCookies=true");
-        console.log(request);
+        // console.log(request);
         const result = await sendRequest(request);
         console.log(result);
-        if (result.status == "success"){
+        if (result.status == "success") {
             navigate('/');
         } else {
+            console.log('Password incorrect or user account does not exist.')
             setErrors(result.errors)
+            navigate('/account/register');
         }
     }
 
     return (
         <>
-        <div className="text-red-500">
-            {errors.length > 0 && errors.map((err, i) =>
-                <p key={i}>{err}</p>
-            )}
-        </div>
-        <Auth handleSubmitForm={handleSubmitForm}/>
+            <div className="text-red-500">
+                {errors.length > 0 && errors.map((err, i) =>
+                    <p key={i}>{err}</p>
+                )}
+            </div>
+            <Auth handleSubmitForm={handleSubmitForm} />
         </>
     )
 }
