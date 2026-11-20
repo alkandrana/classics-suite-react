@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { getFormData, buildSubmitRequest } from "../utils/form_utils.js";
 import { sendRequest, fetchOne } from "../utils/api_utils";
 import Tooltip from "./ui/Tooltip.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Poem({ endpoint, workId }) {
 
     const [lineAdd, setLineAdd] = useState(false);
     const [errors, setErrors] = useState([]);
+    const navigate = useNavigate();
     const [work, setWork] = useState(null);
 
     useEffect(() => {
@@ -28,7 +30,7 @@ export default function Poem({ endpoint, workId }) {
                     }
                 });
             } else if (result.statusCode == 404) {
-                setErrors("No project associated with that work exists. Redirecting to Add Project form...");
+                setErrors(["No project associated with that work exists. Redirecting to Add Project form..."]);
                 navigate(`/study/add/${workId}`);
             }
 
@@ -114,6 +116,7 @@ export default function Poem({ endpoint, workId }) {
     ) : (
         <div className="text-red-500">
             One or more errors occurred:
+            {console.log(errors)}
             {errors.map((error, i) => <p key={i}>{error}</p>)}
         </div>
     )

@@ -23,7 +23,7 @@ const fetchAll = async (endpoint) => {
     return result;
 }
 
-const sendRequest = async (request, navigate) => {
+const sendRequest = async (request) => {
     const result = {};
     const response = await fetch(request.url, request.options);
     result.statusCode = response.status;
@@ -34,7 +34,6 @@ const sendRequest = async (request, navigate) => {
             result.data = content;
         } else if (response.status == 401) {
             console.log("User not logged in: redirecting to login page.");
-            navigate("/account/login");
         }
 
         else {
