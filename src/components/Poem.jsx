@@ -3,6 +3,7 @@ import { getFormData, buildSubmitRequest } from "../utils/form_utils.js";
 import { sendRequest, fetchOne } from "../utils/api_utils";
 import Tooltip from "./ui/Tooltip.jsx";
 import { useNavigate } from "react-router-dom";
+import LineRow from "./table/LineRow.jsx";
 
 export default function Poem({ endpoint, workId }) {
   const [lineAdd, setLineAdd] = useState(false);
@@ -21,6 +22,7 @@ export default function Poem({ endpoint, workId }) {
           if (result.status == "success") {
             const sections = groupLines(workResult.data.opus.lines);
             workResult.data.opus.lines = sections;
+            console.log(sections);
             setWork(workResult.data);
           } else {
             setErrors(workResult.errors);
@@ -72,11 +74,7 @@ export default function Poem({ endpoint, workId }) {
             key={sec}
             className="min-w-full table-fixed divide-y divide-gray-200 bg-gray-700 text-left text-sm text-white"
           >
-            <caption>
-              <Tooltip text="First Poem" className="">
-                {sec}
-              </Tooltip>
-            </caption>
+            <caption>{sec}</caption>
             <thead className="bg-gray-500 text-lg font-extrabold tracking-wider text-gray-50">
               <tr>
                 <th className="p-3 w-50" scope="col">
@@ -90,19 +88,9 @@ export default function Poem({ endpoint, workId }) {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {work.opus.lines[sec].map((li) => (
-                <tr key={li.id}>
-                  <td>{li.number}</td>
-                  <td>{li.text}</td>
-                  <td>
-                    <a
-                      className="text-blue-600 underline"
-                      href={`/vocab/add/${li.id}`}
-                    >
-                      Add vocab
-                    </a>
-                  </td>
-                </tr>
+                <LineRow key={li.id} line={li} />
               ))}
+
               <tr>
                 <td colSpan="2">
                   <form
