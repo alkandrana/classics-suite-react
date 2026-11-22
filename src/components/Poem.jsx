@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { getFormData, buildSubmitRequest } from "../utils/form_utils.js";
 import { sendRequest, fetchOne } from "../utils/api_utils";
-import Tooltip from "./ui/Tooltip.jsx";
 import { useNavigate } from "react-router-dom";
 import LineRow from "./table/LineRow.jsx";
 

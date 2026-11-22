@@ -11,28 +11,28 @@ export default function LineRow({ line }) {
    * 6. In JSX, map over completed list
    */
   console.log("In Line component: ", line);
-  const getPosition = (vocabInstance, lineText, vocabObj) => {
-    const vocabDetails = {};
-    vocabDetails.start = lineText
+  const getPosition = (phrase, lineText, tooltipText) => {
+    const phraseDetails = {};
+    phraseDetails.start = lineText
       .toLowerCase()
-      .indexOf(vocabInstance.toLowerCase());
-    if (vocabDetails.start == -1) {
+      .indexOf(phrase.toLowerCase());
+    if (phraseDetails.start == -1) {
       console.log("ERROR: vocab item not found in string.");
       return;
     }
-    vocabDetails.end = vocabDetails.start + vocabInstance.length;
-
-    const tooltip = buildTooltip(vocabObj, lineText, vocabDetails);
+    phraseDetails.end = phraseDetails.start + phrase.length;
+    console.log(`Building tooltip: ${tooltipText}`);
+    const tooltip = buildTooltip(tooltipText, lineText, phraseDetails);
     console.log("Tooltip built: ", tooltip);
-    vocabDetails.text = tooltip;
-    return vocabDetails;
+    phraseDetails.text = tooltip;
+    return phraseDetails;
   };
 
-  const buildTooltip = (vocabObj, lineText, tooltipObj) => {
+  const buildTooltip = (tooltipText, lineText, tooltipObj) => {
     const tooltip = (
       <Tooltip
         key={tooltipObj.start}
-        text={`${vocabObj.lemma} = ${vocabObj.definition}`}
+        text={`${tooltipText}`}
       >
         {lineText.slice(tooltipObj.start, tooltipObj.end + 1)}
       </Tooltip>
@@ -40,18 +40,10 @@ export default function LineRow({ line }) {
     return tooltip;
   };
 
-  const getVocabTooltips = (line) => {
-    const vocab = [];
-    for (let v of line.vocabReferences) {
-      vocab.push(getPosition(v.instance, line.text, v.vocab));
-    }
-    return vocab;
-  };
-
-  const getSpans = (line, vocabTooltips) => {
+  const getSpans = (line, tooltipList) => {
     const spans = [];
     let startIndex = 0;
-    for (let t of vocabTooltips) {
+    for (let t of tooltipList) {
       let text = line.text.slice(startIndex, t.start);
       if (text) {
         spans.push({
@@ -74,9 +66,16 @@ export default function LineRow({ line }) {
   };
 
   const buildLine = (line) => {
-    const vocabTooltips = getVocabTooltips(line);
-    const spans = getSpans(line, vocabTooltips);
-    const lineArray = vocabTooltips.concat(spans);
+    const vocabList = [];
+    const commentList = [];
+    line.vocabReferences.forEach((v) =>
+      vocabList.push(getPosition(v.instance, line.text, `${v.vocab.lemma} = ${v.vocab.definition}`)));
+    line.comments.forEach((c) =>
+      commentList.push(getPosition(c.phrase, line.text, c.note))
+  );
+    const allTooltips = vocabList.concat(commentList).sort((a, b) => a.start - b.start);
+    const spans = getSpans(line, allTooltips);
+    const lineArray = allTooltips.concat(spans);
     return lineArray.sort((a, b) => a.start - b.start);
   };
 
