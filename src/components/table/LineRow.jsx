@@ -69,10 +69,11 @@ export default function LineRow({ line }) {
     const vocabList = [];
     const commentList = [];
     line.vocabReferences.forEach((v) =>
-      vocabList.push(getPosition(v.instance, line.text, `${v.vocab.lemma} = ${v.vocab.definition}`)));
+      vocabList.push(getPosition(v.instance, line.text, `${v.vocab.lemma} = ${v.vocab.definition}`))
+    );
     line.comments.forEach((c) =>
       commentList.push(getPosition(c.phrase, line.text, c.note))
-  );
+    );
     const allTooltips = vocabList.concat(commentList).sort((a, b) => a.start - b.start);
     const spans = getSpans(line, allTooltips);
     const lineArray = allTooltips.concat(spans);

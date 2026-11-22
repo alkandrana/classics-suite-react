@@ -41,9 +41,9 @@ const sendRequest = async (request) => {
             result.status = "error"
             const content = await response.json();
             if (result.errors) {
-                result.errors.push(`${response.status}: ${json.stringify(content)}`);
+                result.errors.push(`${response.status}: ${JSON.stringify(content)}`);
             } else {
-                result.errors = [`${response.status}: ${json.stringify(content)}`]
+                result.errors = [`${response.status}: ${JSON.stringify(content)}`]
             }
         }
     } catch (err) {

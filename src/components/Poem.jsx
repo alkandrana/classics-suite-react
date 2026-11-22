@@ -1,43 +1,9 @@
-import { useState, useEffect } from "react";
+
 import { getFormData, buildSubmitRequest } from "../utils/form_utils.js";
-import { sendRequest, fetchOne } from "../utils/api_utils";
-import { useNavigate } from "react-router-dom";
+import { sendRequest } from "../utils/api_utils";
 import LineRow from "./table/LineRow.jsx";
 
-export default function Poem({ endpoint, workId }) {
-  const [lineAdd, setLineAdd] = useState(false);
-  const [errors, setErrors] = useState([]);
-  const navigate = useNavigate();
-  const [work, setWork] = useState(null);
-
-  useEffect(() => {
-    const groupLines = (lines) => {
-      const sections = Object.groupBy(lines, ({ locus }) => locus);
-      return sections;
-    };
-    fetchOne(workId, endpoint).then((result) => {
-      if (result.status == "success") {
-        fetchOne(result.data[0].id, "projects").then((workResult) => {
-          if (result.status == "success") {
-            const sections = groupLines(workResult.data.opus.lines);
-            workResult.data.opus.lines = sections;
-            console.log(sections);
-            setWork(workResult.data);
-          } else {
-            setErrors(workResult.errors);
-          }
-        });
-      } else if (result.statusCode == 404) {
-        setErrors([
-          "No project associated with that work exists. Redirecting to Add Project form...",
-        ]);
-        navigate(`/study/add/${workId}`);
-      } else {
-        setErrors(result.errors);
-        console.log(result);
-      }
-    });
-  }, [lineAdd]);
+export default function Poem({ work, errors, newLineSetter, errorSetter }) {
 
   const handleNewLine = (e) => {
     const $btn = e.currentTarget;
@@ -54,9 +20,9 @@ export default function Poem({ endpoint, workId }) {
     const result = await sendRequest(request);
     if (result.status == "success") {
       console.log("Line added successfully: ", result.data);
-      setLineAdd(true);
+      newLineSetter(true);
     } else {
-      setErrors(result.errors);
+      errorSetter(result.errors);
     }
     $form.classList.add("hidden");
     $btn.classList.remove("hidden");
