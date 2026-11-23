@@ -8,10 +8,11 @@ import AddAuthor from './components/AddAuthor.jsx';
 import AddOpus from './components/opus/AddOpus.jsx';
 import Opus from './components/opus/Opus.jsx';
 import Study from './components/Study.jsx';
-import Register from './components/account/Register.jsx'
-import Login from './components/account/Login.jsx'
-import AddVocab from './components/AddVocab.jsx'
-import AddProject from './components/project/AddProject.jsx'
+import Register from './components/account/Register.jsx';
+import Login from './components/account/Login.jsx';
+import AddVocab from './components/AddVocab.jsx';
+import AddProject from './components/project/AddProject.jsx';
+import AddComment from './components/AddComment.jsx';
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -36,6 +37,9 @@ createRoot(document.getElementById('root')).render(
                     </Route>
                     <Route path="vocab">
                         <Route path="add/:lineId" element={<AddVocab />} />
+                    </Route>
+                    <Route path="comments">
+                        <Route path="add/:lineId" element={<AddComment/>}/>
                     </Route>
                 </Route>
             </Routes>

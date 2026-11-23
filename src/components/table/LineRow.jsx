@@ -13,9 +13,7 @@ export default function LineRow({ line }) {
   console.log("In Line component: ", line);
   const getPosition = (phrase, lineText, tooltipText) => {
     const phraseDetails = {};
-    phraseDetails.start = lineText
-      .toLowerCase()
-      .indexOf(phrase.toLowerCase());
+    phraseDetails.start = lineText.toLowerCase().indexOf(phrase.toLowerCase());
     if (phraseDetails.start == -1) {
       console.log("ERROR: vocab item not found in string.");
       return;
@@ -30,10 +28,7 @@ export default function LineRow({ line }) {
 
   const buildTooltip = (tooltipText, lineText, tooltipObj) => {
     const tooltip = (
-      <Tooltip
-        key={tooltipObj.start}
-        text={`${tooltipText}`}
-      >
+      <Tooltip key={tooltipObj.start} text={`${tooltipText}`}>
         {lineText.slice(tooltipObj.start, tooltipObj.end + 1)}
       </Tooltip>
     );
@@ -69,12 +64,20 @@ export default function LineRow({ line }) {
     const vocabList = [];
     const commentList = [];
     line.vocabReferences.forEach((v) =>
-      vocabList.push(getPosition(v.instance, line.text, `${v.vocab.lemma} = ${v.vocab.definition}`))
+      vocabList.push(
+        getPosition(
+          v.instance,
+          line.text,
+          `${v.vocab.lemma} = ${v.vocab.definition}`,
+        ),
+      ),
     );
     line.comments.forEach((c) =>
-      commentList.push(getPosition(c.phrase, line.text, c.note))
+      commentList.push(getPosition(c.reference, line.text, c.note)),
     );
-    const allTooltips = vocabList.concat(commentList).sort((a, b) => a.start - b.start);
+    const allTooltips = vocabList
+      .concat(commentList)
+      .sort((a, b) => a.start - b.start);
     const spans = getSpans(line, allTooltips);
     const lineArray = allTooltips.concat(spans);
     return lineArray.sort((a, b) => a.start - b.start);
@@ -91,6 +94,13 @@ export default function LineRow({ line }) {
       <td>
         <a className="text-blue-600 underline" href={`/vocab/add/${line.id}`}>
           Add vocab
+        </a>
+        &nbsp;
+        <a
+          className="text-blue-600 underline"
+          href={`/comments/add/${line.id}`}
+        >
+          Add comment
         </a>
       </td>
     </tr>
