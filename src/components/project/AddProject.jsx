@@ -7,7 +7,7 @@ export default function AddProject() {
 
     const { workId } = useParams();
     const navigate = useNavigate();
-    const [errors, setErrors] = useState(null);
+    const [errors, setErrors] = useState([]);
 
     const handleAddProject = (e) => {
         const data = getFormData(e);
@@ -21,15 +21,7 @@ export default function AddProject() {
             navigate('/acount/login');
         } else {
             console.log("An error occurred attempting to save the project: ", result);
-            const currentErrors = errors;
-            if (currentErrors) {
-                currentErrors.formSubmission = result.errors;
-            } else {
-                currentErrors = {
-                    formSubmission: result.errors
-                };
-            }
-            setErrors(currentErrors);
+            setErrors(result.errors);
         }
     }
 

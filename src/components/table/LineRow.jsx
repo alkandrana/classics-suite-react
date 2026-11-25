@@ -27,7 +27,7 @@ export default function LineRow({ line }) {
 
   const buildTooltip = (tooltipText, lineText, tooltipObj) => {
     const tooltip = (
-      <Tooltip key={tooltipObj.start} text={`${tooltipText}`}>
+      <Tooltip key={tooltipObj.start} text={`${tooltipText}`} text2={tooltipObj.comment}>
         {lineText.slice(tooltipObj.start, tooltipObj.end + 1)}
       </Tooltip>
     );

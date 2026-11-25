@@ -14,13 +14,17 @@ export default function Study() {
   useEffect(() => {
 
     fetchOne(workId, "projects/work").then((result) => {
-      if (result.status == "success") {
+      if (result.statusCode == 401){
+        navigate("/account/login");
+      }
+      else if (result.status == "success") {
         fetchOne(result.data[0].id, "projects").then((workResult) => {
           if (result.status == "success") {
             const sections = groupLines(workResult.data.opus.lines);
             workResult.data.opus.lines = sections;
             console.log(sections);
             setWork(workResult.data);
+            console.log('Fetched project: ', workResult.data);
           } else {
             setErrors(workResult.errors);
           }

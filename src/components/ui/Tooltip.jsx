@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./Tooltip.css";
 
-export default function Tooltip({ text, children }) {
+export default function Tooltip({ text, children, text2 = null }) {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -13,7 +13,12 @@ export default function Tooltip({ text, children }) {
       onBlur={() => setIsVisible(false)}
     >
       {children}
-      {isVisible && <div className="tooltip">{text}</div>}
+      {isVisible && (
+        <div className="tooltip">
+          {text}
+          {text2 && (<div>{text2}</div>)}
+        </div>
+      )}
     </div>
   );
 }
