@@ -20,9 +20,8 @@ export default function LineRow({ line }) {
     }
     phraseDetails.end = phraseDetails.start + phrase.length;
     console.log(`Building tooltip: ${tooltipText}`);
-    const tooltip = buildTooltip(tooltipText, lineText, phraseDetails);
-    console.log("Tooltip built: ", tooltip);
-    phraseDetails.text = tooltip;
+    phraseDetails.text = tooltipText;
+    phraseDetails.type = "tooltip";
     return phraseDetails;
   };
 
@@ -45,6 +44,7 @@ export default function LineRow({ line }) {
           text: <span key={startIndex}>{text}</span>,
           start: startIndex,
           end: startIndex + text.length,
+          type: "span",
         });
       }
       startIndex = t.end;
@@ -61,25 +61,31 @@ export default function LineRow({ line }) {
   };
 
   const buildLine = (line) => {
-    const vocabList = [];
-    const commentList = [];
+    const tooltipDetails = [];
     line.vocabReferences.forEach((v) =>
-      vocabList.push(
+      tooltipDetails.push(
         getPosition(
           v.instance,
           line.text,
-          `${v.vocab.lemma} = ${v.vocab.definition}`,
+          `V: ${v.vocab.lemma} = ${v.vocab.definition}`,
         ),
       ),
     );
-    line.comments.forEach((c) =>
-      commentList.push(getPosition(c.reference, line.text, c.note)),
-    );
-    const allTooltips = vocabList
-      .concat(commentList)
-      .sort((a, b) => a.start - b.start);
-    const spans = getSpans(line, allTooltips);
-    const lineArray = allTooltips.concat(spans);
+    line.comments.forEach((c, i) => {
+      let commentObj = getPosition(c.reference, line.text, c.note);
+      let currentObj = tooltipDetails.find(
+        (t) => t.start == commentObj.start && t.end == commentObj.end,
+      );
+      if (currentObj) {
+        tooltipDetails[i].comment = `C: ${c.note}`;
+      } else {
+        tooltipDetails.push(getPosition(c.reference, line.text, c.note));
+      }
+    });
+
+    tooltipDetails.sort((a, b) => a.start - b.start);
+    const spans = getSpans(line, tooltipDetails);
+    const lineArray = tooltipDetails.concat(spans);
     return lineArray.sort((a, b) => a.start - b.start);
   };
 
@@ -87,8 +93,12 @@ export default function LineRow({ line }) {
     <tr>
       <td>{line.number}</td>
       <td>
-        {line.vocabReferences.length > 0
-          ? buildLine(line).map((it) => it.text)
+        {line.vocabReferences.length > 0 || line.comments.length > 0
+          ? buildLine(line).map((it) =>
+              it.type == "tooltip"
+                ? buildTooltip(it.text, line.text, it)
+                : it.text,
+            )
           : line.text}
       </td>
       <td>
