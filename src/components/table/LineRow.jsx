@@ -79,7 +79,7 @@ export default function LineRow({ line }) {
       if (currentObj) {
         tooltipDetails[i].comment = `C: ${c.note}`;
       } else {
-        tooltipDetails.push(getPosition(c.reference, line.text, c.note));
+        tooltipDetails.push(getPosition(c.reference, line.text, `C: ${c.note}`));
       }
     });
 
